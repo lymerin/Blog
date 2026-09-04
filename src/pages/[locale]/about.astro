@@ -1,0 +1,18 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import PageTitle from '~/components/base/PageTitle.astro'
+import { getLocaleStaticPaths, t, type Locale } from '~/i18n'
+
+export const getStaticPaths = getLocaleStaticPaths
+
+const { locale } = Astro.props as { locale: Locale }
+---
+
+<Layout title={t(locale, 'about.title')} description={`${t(locale, 'about.title')} Lin Chun Ho`}>
+  <div class="relative z-[1] py-8 pb-10 px-6 sm:px-8">
+    <PageTitle title={t(locale, 'home.name')} introduce={`${t(locale, 'home.romanizedName')} · ${t(locale, 'about.subtitle')}`} />
+    <div class="mt-10 space-y-3 text-muted-foreground">
+      <p>{t(locale, 'about.placeholder')}</p>
+    </div>
+  </div>
+</Layout>

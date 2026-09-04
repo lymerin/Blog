@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Open Source · Blog Manager{% endblock %}
+{% block content %}
+  <header class="page-header"><div><h1>Open Source</h1><p>项目和贡献数据直接来自博客的统一数据文件。</p></div><a class="button primary" href="{{ url_for('contribution_add') }}">Add PR</a></header>
+  <div class="card-grid">
+    {% for project in projects %}
+      <a class="project-card" href="{{ url_for('open_source_project', project_slug=project.slug) }}"><div><strong>{{ project.name }}</strong><span>{{ project.repository }}</span></div><b>{{ project.mergedCount }} Merged {{ 'PR' if project.mergedCount == 1 else 'PRs' }}</b><em>Manage →</em></a>
+    {% endfor %}
+  </div>
+{% endblock %}

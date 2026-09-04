@@ -1,0 +1,33 @@
+---
+const fallbackLocale = 'zh-cn'
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Lin Chun Ho</title>
+    <noscript><meta http-equiv="refresh" content={`0;url=/${fallbackLocale}/`} /></noscript>
+  </head>
+  <body data-pagefind-ignore>
+    <p>正在进入博客……</p>
+    <script is:inline>
+      ;(() => {
+        let stored = null
+        try {
+          stored = localStorage.getItem('blog-locale')
+        } catch {}
+        if (stored === 'zh-cn' || stored === 'zh-hk') {
+          location.replace(`/${stored}/`)
+          return
+        }
+
+        const languages = navigator.languages?.length ? navigator.languages : [navigator.language]
+        const traditional = languages.some((language) => /^(zh-(hk|tw|mo))\b/i.test(language))
+        location.replace(traditional ? '/zh-hk/' : '/zh-cn/')
+      })()
+    </script>
+  </body>
+</html>

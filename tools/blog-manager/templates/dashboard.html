@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Blog Manager{% endblock %}
+{% block content %}
+  <header class="page-header"><div><h1>Dashboard</h1><p>当前博客内容与开源贡献概览。</p></div></header>
+  <section class="stats" aria-label="Content statistics">
+    <div class="stat"><span>Articles</span><strong>{{ stats.articles }}</strong></div>
+    <div class="stat"><span>Published</span><strong>{{ stats.published }}</strong></div>
+    <div class="stat"><span>Draft</span><strong>{{ stats.drafts }}</strong></div>
+    <div class="stat"><span>Merged PR</span><strong>{{ stats.prs }}</strong></div>
+    <div class="stat"><span>Unlinked PR</span><strong>{{ stats.unlinked }}</strong></div>
+  </section>
+  <section class="panel">
+    <div class="section-heading"><div><h2>Quick actions</h2><p>常用操作，不修改正文编辑习惯。</p></div></div>
+    <div class="action-grid">
+      <a class="action-card" href="{{ url_for('import_page') }}"><strong>Import Markdown</strong><span>导入 .md 或 .mdx</span></a>
+      <a class="action-card" href="{{ url_for('contribution_add') }}"><strong>Add PR</strong><span>GitHub 自动读取或手工填写</span></a>
+      <a class="action-card" href="{{ url_for('relations') }}"><strong>Open Relations</strong><span>维护 PR ↔ Article</span></a>
+      <a class="action-card" href="{{ url_for('preview_page') }}"><strong>Start Preview</strong><span>启动与检查本地博客</span></a>
+    </div>
+  </section>
+{% endblock %}

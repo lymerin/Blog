@@ -1,0 +1,1 @@
+"""Blog Manager service layer."""

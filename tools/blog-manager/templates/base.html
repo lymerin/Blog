@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}Blog Manager{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='app-icon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="{{ url_for('static', filename='app-icon.png') }}" alt="">
+        <div><strong>Blog Manager</strong><small>Local workspace</small></div>
+      </div>
+      <nav aria-label="Manager navigation">
+        <a class="{{ 'active' if request.endpoint == 'dashboard' else '' }}" href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a class="{{ 'active' if request.endpoint and (request.endpoint.startswith('article') or request.endpoint.startswith('import')) else '' }}" href="{{ url_for('article_list') }}">Articles</a>
+        <a class="{{ 'active' if request.endpoint and (request.endpoint.startswith('open_source') or request.endpoint.startswith('contribution')) else '' }}" href="{{ url_for('open_source_list') }}">Open Source</a>
+        <a class="{{ 'active' if request.endpoint == 'relations' or request.endpoint == 'relation_update' else '' }}" href="{{ url_for('relations') }}">Relations</a>
+        <a class="{{ 'active' if request.endpoint and request.endpoint.startswith('preview') else '' }}" href="{{ url_for('preview_page') }}">Preview</a>
+      </nav>
+      <div class="sidebar-foot">
+        <button class="quiet-button" type="button" data-theme-toggle>Toggle theme</button>
+        <span title="{{ blog_root }}">{{ blog_root }}</span>
+      </div>
+    </aside>
+    <main class="workspace">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack">
+            {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

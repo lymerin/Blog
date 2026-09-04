@@ -1,0 +1,30 @@
+---
+import { cn } from '~/lib/utils'
+
+type Props = {
+  href: string
+  class?: string
+  background?: boolean
+  [key: string]: any
+}
+
+const { href, class: className, background, ...props }: Props = Astro.props
+const currentPath = Astro.url.pathname.replace(/\/+$/, '')
+const targetPath = href.replace(/\/+$/, '')
+const isHomeLink = href.endsWith('/')
+const isActive = currentPath === targetPath || (!isHomeLink && currentPath.startsWith(`${targetPath}/`))
+---
+
+<a
+  {href}
+  class={cn(
+    'text-sm px-2 sm:px-4 py-2 font-medium',
+    background && 'transition-colors text-foreground/50 hover:bg-accent hover:text-foreground',
+    isActive && 'text-foreground',
+    className
+  )}
+  rel="prefetch"
+  {...props}
+>
+  <slot />
+</a>

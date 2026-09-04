@@ -1,0 +1,24 @@
+---
+import FeaturedOpenSource from '~/components/base/FeaturedOpenSource.astro'
+import PageTitle from '~/components/base/PageTitle.astro'
+import Layout from '~/layouts/Layout.astro'
+import { getLocaleStaticPaths, t, type Locale } from '~/i18n'
+
+export const getStaticPaths = getLocaleStaticPaths
+
+const { locale } = Astro.props as { locale: Locale }
+const title = t(locale, 'openSource.title')
+const description = t(locale, 'openSource.description')
+const introduce = t(locale, 'openSource.introduce')
+---
+
+<Layout {title} {description}>
+  <div class="relative z-[1] py-8 pb-10">
+    <div class="px-6 sm:px-8">
+      <PageTitle {title} {introduce} />
+    </div>
+    <div class="mt-10 px-6 sm:px-8 fade-up">
+      <FeaturedOpenSource />
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,123 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import { getMergedPRLabel, OPEN_SOURCE_PROJECTS, type OpenSourceProject } from '~/data/open-source'
+import { LOCALES, localePath, t, type Locale } from '~/i18n'
+
+export function getStaticPaths() {
+  return LOCALES.flatMap((locale) =>
+    OPEN_SOURCE_PROJECTS.map((project) => ({
+      params: { locale, slug: project.slug },
+      props: { locale, project },
+    }))
+  )
+}
+
+interface Props {
+  locale: Locale
+  project: OpenSourceProject
+}
+
+const { locale, project } = Astro.props as Props
+const dateFormatter = new Intl.DateTimeFormat(locale === 'zh-hk' ? 'zh-HK' : 'zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+})
+---
+
+<Layout title={`${project.name} · ${t(locale, 'openSource.title')}`} description={project.description}>
+  <div class="relative z-[1] py-8 pb-10 px-6 sm:px-8">
+    <a
+      href={localePath(locale, '/open-source')}
+      class="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+    >
+      <span class="icon-[material-symbols--arrow-back-rounded] size-4"></span>
+      {t(locale, 'openSource.back')}
+    </a>
+
+    <header class="mt-6">
+      <div class="flex items-start justify-between gap-5">
+        <h1 class="min-w-0 text-3xl sm:text-4xl tracking-tight text-balance">{project.name}</h1>
+        <a
+          href={project.repository}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-1 inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          aria-label={`${t(locale, 'openSource.repository')}: ${project.name}`}
+          title={`${t(locale, 'openSource.repository')}: ${project.name}`}
+        >
+          <span class="icon-[mdi--github] size-5"></span>
+        </a>
+      </div>
+      <p class="mt-3 text-muted-foreground">{project.description}</p>
+      <div class="mt-5 flex flex-wrap items-center gap-2">
+        {project.tags.map((tag) => <span class="tech-tag">{tag}</span>)}
+        <span class="ml-auto text-sm font-medium text-muted-foreground">{getMergedPRLabel(project)}</span>
+      </div>
+    </header>
+
+    <section class="mt-12" aria-labelledby="merged-prs-heading">
+      <h2 id="merged-prs-heading" class="text-xl sm:text-2xl tracking-tight">{t(locale, 'openSource.contributions')}</h2>
+      <div class="mt-5 grid gap-3">
+        {
+          project.contributions.map((contribution) => (
+            <article class="rounded-lg border border-border/70 bg-background p-5 transition-colors hover:bg-muted/30">
+              <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-5">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-muted-foreground">
+                    <a
+                      href={contribution.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1 transition-colors hover:text-foreground"
+                    >
+                      PR #{contribution.number}
+                      <span class="icon-[material-symbols--arrow-outward-rounded] size-4"></span>
+                    </a>
+                    {contribution.issueNumber && contribution.issueUrl && (
+                      <a
+                        href={contribution.issueUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1 transition-colors hover:text-foreground"
+                      >
+                        Issue #{contribution.issueNumber}
+                        <span class="icon-[material-symbols--arrow-outward-rounded] size-4"></span>
+                      </a>
+                    )}
+                  </div>
+                  <h3 class="mt-1 font-serif text-lg font-medium tracking-tight text-pretty">{contribution.title}</h3>
+                </div>
+                <time datetime={contribution.mergedAt} class="shrink-0 text-sm text-muted-foreground">
+                  {t(locale, 'openSource.merged')} · {dateFormatter.format(new Date(contribution.mergedAt))}
+                </time>
+              </div>
+              <p class="mt-4 text-sm leading-6 text-muted-foreground text-pretty">{contribution.summary[locale]}</p>
+              <div class="mt-4 flex flex-wrap items-center gap-4 text-sm font-medium">
+                <a
+                  href={contribution.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <span class="icon-[mdi--github] size-4"></span>
+                  {t(locale, 'openSource.github')}
+                </a>
+                {contribution.article && (
+                  <a
+                    href={localePath(locale, `/posts/${contribution.article}`)}
+                    class="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <span class="icon-[material-symbols--article-outline-rounded] size-4"></span>
+                    {t(locale, 'openSource.writeUp')}
+                  </a>
+                )}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</Layout>

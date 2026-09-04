@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Preview · Blog Manager{% endblock %}
+{% block content %}
+  <header class="page-header"><div><h1>Preview</h1><p>本地预览和构建检查；同一时间只管理一个预览进程。</p></div></header>
+  <section class="panel preview-panel" data-preview-panel data-url="{{ status.url }}">
+    <div class="preview-state"><span class="status {{ 'published' if status.running else 'draft' }}" data-preview-state>{{ 'Running' if status.running else ('External process' if status.external else 'Stopped') }}</span><code>{{ status.url }}</code></div>
+    <div class="form-actions"><button class="button primary" type="button" data-preview-action="start">Start Dev Preview</button><button class="button" type="button" data-preview-action="stop">Stop Dev Preview</button><a class="button" href="{{ status.url }}" target="_blank" rel="noopener" data-open-blog>Open Blog</a><button class="button" type="button" data-build>Build</button></div>
+    <pre class="output" data-process-output>{{ status.logs }}</pre>
+  </section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Import Markdown · Blog Manager{% endblock %}
+{% block content %}
+  <header class="page-header"><div><a class="back-link" href="{{ url_for('article_list') }}">← Articles</a><h1>Import Markdown</h1><p>选择或拖入 .md / .mdx，确认 Frontmatter 后再写入博客。</p></div></header>
+  <section class="panel" data-import-panel>
+    <div class="drop-zone" data-drop-zone tabindex="0"><strong>Drop Markdown here</strong><span>or click to choose a .md / .mdx file</span><input type="file" accept=".md,.mdx,text/markdown" data-import-file></div>
+    <div class="notice hidden" data-import-message></div>
+    <form class="form-grid hidden" data-import-form>
+      <label class="wide">Source<input readonly data-field="filename"></label>
+      <label class="wide">Title<input name="title" required></label>
+      <label class="wide">Description<textarea name="description" required rows="3"></textarea></label>
+      <label>Slug<input name="slug" required></label>
+      <label>Publish date<input type="date" name="pubDate" required></label>
+      <label class="wide">Tags <small>comma separated</small><input name="tags"></label>
+      <label>Author<input name="author"></label>
+      <label>Conflict<select name="conflictAction"><option value="cancel">Cancel if file exists</option><option value="rename">Import with a new suffix</option><option value="overwrite">Overwrite after confirmation</option></select></label>
+      <div class="wide checks"><label><input type="checkbox" name="draft"> Draft</label><label><input type="checkbox" name="pinned"> Pinned</label><label><input type="checkbox" name="recommend"> Recommended</label></div>
+      <div class="wide form-actions"><button class="button primary" type="submit">Import article</button></div>
+    </form>
+  </section>
+{% endblock %}

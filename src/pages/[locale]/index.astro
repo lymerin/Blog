@@ -1,0 +1,134 @@
+---
+import { SITE, SKILLSSHOWCASE_CONFIG, SOCIAL_LINKS } from '~/config.ts'
+import { GITHUB_CONFIG, POSTS_CONFIG } from '~/config.ts'
+import Layout from '~/layouts/Layout.astro'
+import SectionDivider from '~/components/base/SectionDivider.astro'
+import GithubContributions from '~/components/base/GithubContributions.tsx'
+import SocialLink from '~/components/base/SocialLink.astro'
+import List from '~/components/posts/card/List.astro'
+import SkillsShowcase from '~/components/base/SkillsShowcase.astro'
+import FeaturedOpenSource from '~/components/base/FeaturedOpenSource.astro'
+import { getNumPosts, getPinnedPosts } from '~/lib/data'
+import { getLocaleStaticPaths, t, type Locale } from '~/i18n'
+
+export const getStaticPaths = getLocaleStaticPaths
+
+const { locale } = Astro.props as { locale: Locale }
+
+const { ENABLED, GITHUB_USERNAME, TOOLTIP_ENABLED } = GITHUB_CONFIG
+const { size, type } = POSTS_CONFIG.homePageConfig
+const { SKILLS_ENABLED, SKILLS_DATA } = SKILLSSHOWCASE_CONFIG
+
+let showPosts = []
+const pinnedPosts = await getPinnedPosts(locale)
+const hasPinnedPosts = pinnedPosts.length > 0
+if (hasPinnedPosts) {
+  showPosts = pinnedPosts
+} else {
+  showPosts = await getNumPosts(size, locale)
+}
+---
+
+<Layout title={t(locale, 'home.title')} description={SITE.description}>
+  <div class="relative z-[1]">
+    <div class="py-8 pb-10 px-6 sm:px-8">
+      <h1 class="flex flex-col gap-2">
+        <span class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <span class="text-4xl sm:text-5xl tracking-tight">{t(locale, 'home.name')}</span>
+          <span class="text-base sm:text-lg font-normal tracking-wide text-muted-foreground">{t(locale, 'home.romanizedName')}</span>
+        </span>
+        <span class="text-muted-foreground font-light text-xl sm:text-2xl block tracking-wide text-balance">
+          {t(locale, 'home.role')}
+        </span>
+      </h1>
+      <div class="pro text-muted-foreground text-pretty">
+        <p>
+          {t(locale, 'home.intro')}
+        </p>
+      </div>
+      <div class="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+        <img
+          src="/icons/xmu-emblem.jpg"
+          alt=""
+          width="22"
+          height="22"
+          class="size-[22px] shrink-0 rounded-full object-cover opacity-80"
+          loading="eager"
+          decoding="async"
+        />
+        <span>{t(locale, 'home.education')}</span>
+      </div>
+      {
+        SOCIAL_LINKS.length > 0 && (
+          <div class="mt-6 flex gap-6">
+            {SOCIAL_LINKS.map((item) => (
+              <SocialLink
+                href={item.url}
+                icon={item.icon}
+                aria-label={`${item.name}: ${GITHUB_CONFIG.GITHUB_USERNAME}`}
+                count={item.count}
+                label={item.name === 'GitHub' ? GITHUB_CONFIG.GITHUB_USERNAME : item.name}
+              />
+            ))}
+          </div>
+        )
+      }
+    </div>
+    {
+      ENABLED && (
+        <>
+          <SectionDivider />
+          <div class="py-8 pb-10 px-6 max-md:px-6">
+            <div class="px-2 max-md:px-0">
+              <h2 class="text-2xl sm:text-3xl">{t(locale, 'home.contributions')}</h2>
+              <p class="text-muted-foreground mb-6 mt-1">{t(locale, 'home.contributionsDescription')}</p>
+            </div>
+            <GithubContributions
+              username={GITHUB_USERNAME}
+              tooltipEnabled={TOOLTIP_ENABLED}
+              {locale}
+              client:load
+              transition:animate="none"
+            />
+          </div>
+        </>
+      )
+    }
+    <SectionDivider />
+    <section class="py-8 pb-10 px-6 sm:px-8">
+      <div class="mb-6">
+        <h2 class="text-2xl sm:text-3xl tracking-tight">{t(locale, 'home.openSource')}</h2>
+        <p class="text-muted-foreground mt-1">{t(locale, 'home.openSourceDescription')}</p>
+      </div>
+      <FeaturedOpenSource />
+    </section>
+    {
+      SKILLS_ENABLED && SKILLS_DATA.length > 0 && (
+        <>
+          <SectionDivider />
+          <div class="py-8 pb-10 px-6 max-md:px-6">
+            <div class="px-2 max-md:px-0">
+              <h2 class="text-2xl sm:text-3xl tracking-tight">{t(locale, 'home.skills')}</h2>
+              <p class="text-muted-foreground mb-6 mt-1">{t(locale, 'home.skillsDescription')}</p>
+            </div>
+            <SkillsShowcase skillsData={SKILLS_DATA} />
+          </div>
+        </>
+      )
+    }
+    <SectionDivider />
+    <div class="py-8 pb-10 px-6 sm:px-8">
+      <h2 class="text-2xl sm:text-3xl tracking-tight">{t(locale, 'home.latest')}</h2>
+      {
+        showPosts.length > 0 ? (
+          <>
+            <p class="text-muted-foreground mb-6 mt-1">{t(locale, 'home.latestDescription')}</p>
+            <List posts={showPosts} {type} coverLayout={POSTS_CONFIG.homePageConfig?.coverLayout} />
+          </>
+        ) : (
+          <p class="text-muted-foreground mt-2">{t(locale, 'home.latestDescription')}</p>
+        )
+      }
+    </div>
+  </div>
+</Layout>

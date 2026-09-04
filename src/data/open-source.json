@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "opentelemetry-java-instrumentation",
+    "name": "OpenTelemetry Java Instrumentation",
+    "repository": "https://github.com/open-telemetry/opentelemetry-java-instrumentation",
+    "description": "Fix duplicate process telemetry for Spring Rabbit listeners",
+    "tags": [
+      "OpenTelemetry",
+      "Java",
+      "RabbitMQ",
+      "Observability"
+    ],
+    "contributions": [
+      {
+        "number": 19732,
+        "issueNumber": 19588,
+        "issueUrl": "https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/19588",
+        "title": "Fix duplicate process telemetry for Spring Rabbit listeners",
+        "url": "https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/19732",
+        "mergedAt": "2026-09-02T21:27:10Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "避免 Spring Rabbit listener 消费消息时重复创建 process span 和 messaging.process.duration 指标，同时保留原生 RabbitMQ 消费场景的遥测。",
+          "zh-hk": "避免 Spring Rabbit listener 消費訊息時重複建立 process span 和 messaging.process.duration 指標，同時保留原生 RabbitMQ 消費場景的遙測。"
+        },
+        "article": "example-otel"
+      }
+    ],
+    "accent": "otel"
+  },
+  {
+    "slug": "apache-shenyu",
+    "name": "Apache ShenYu",
+    "repository": "https://github.com/apache/shenyu",
+    "description": "Open-source contributions to Apache ShenYu",
+    "tags": [
+      "Java",
+      "Gateway",
+      "Proxy",
+      "Plugin"
+    ],
+    "contributions": [
+      {
+        "number": 7012,
+        "issueNumber": 6735,
+        "issueUrl": "https://github.com/apache/shenyu/issues/6735",
+        "title": "fix: prevent duplicate TCP bootstrap server creation",
+        "url": "https://github.com/apache/shenyu/pull/7012",
+        "mergedAt": "2026-09-02T14:16:17Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "通过按 selector 的 single-flight 创建机制，避免并发同步时重复启动 TCP bootstrap server，并补全失败回滚与幂等关闭处理。",
+          "zh-hk": "透過按 selector 的 single-flight 建立機制，避免並行同步時重複啟動 TCP bootstrap server，並補全失敗回滾與冪等關閉處理。"
+        }
+      },
+      {
+        "number": 6909,
+        "issueNumber": 6781,
+        "issueUrl": "https://github.com/apache/shenyu/issues/6781",
+        "title": "Fix stale proxy selector data after empty HTTP refresh.",
+        "url": "https://github.com/apache/shenyu/pull/6909",
+        "mergedAt": "2026-08-14T13:46:33Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "修复 HTTP 全量同步收到空快照后旧 proxy selector 运行时数据未清理的问题，并安全关闭缓存的 TCP bootstrap servers。",
+          "zh-hk": "修正 HTTP 全量同步收到空快照後舊 proxy selector 執行階段資料未有清理的問題，並安全關閉快取的 TCP bootstrap servers。"
+        }
+      }
+    ],
+    "accent": "shenyu"
+  }
+]

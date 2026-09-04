@@ -1,0 +1,42 @@
+---
+import '~/styles/global.css'
+import '~/styles/markdown.css'
+import '~/styles/lqip.css'
+import '~/styles/github-card.css'
+import { SITE } from '~/config'
+import Head from '~/components/base/Head.astro'
+import Header from './Header.astro'
+import Footer from './Footer.astro'
+import { getLanguageTag, getLocaleFromPath } from '~/i18n'
+
+type Props = {
+  title: string
+  description: string
+  image?: string
+  disableViewTransition?: boolean
+  noindex?: boolean
+}
+
+const { title, description, image, disableViewTransition, noindex = false }: Props = Astro.props
+const locale = getLocaleFromPath(Astro.url.pathname)
+---
+
+<!doctype html>
+<html lang={getLanguageTag(locale)} transition:name="root" transition:animate={SITE.transition && !disableViewTransition ? 'fade' : 'none'}>
+  <head>
+    <Head title={`${title} | ${SITE.title}`} {description} {image} {locale} {noindex} />
+  </head>
+  <body class="flex flex-col" data-pagefind-filter={`locale:${locale}`} data-pagefind-ignore={noindex ? 'all' : undefined}>
+    <Header {locale} />
+    <div class="grow flex">
+      <main class="relative border-x border-border/50 global-layout-width mx-auto grow min-w-0" data-pagefind-body>
+        <slot />
+      </main>
+    </div>
+    <Footer {locale} />
+    <div
+      class="safari-hidden pointer-events-none bg-white dark:bg-black fixed z-50 bottom-0 left-0 h-28 [mask-image:linear-gradient(transparent,#000000)] w-full"
+    >
+    </div>
+  </body>
+</html>

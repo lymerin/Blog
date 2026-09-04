@@ -1,0 +1,94 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import MetaOnly from '~/components/posts/layouts/MetaOnly.astro'
+import CoverSplit from '~/components/posts/layouts/CoverSplit.astro'
+import CoverTop from '~/components/posts/layouts/CoverTop.astro'
+import PostNavigation from '~/components/posts/base/PostNavigation.astro'
+import PostFeatures from '~/components/posts/toc/PostFeatures.astro'
+import TocMobile from '~/components/posts/toc/TocMobile.astro'
+import { POSTS_CONFIG, SITE } from '~/config'
+import { render, type CollectionEntry } from 'astro:content'
+import { getAllPosts } from '~/lib/data'
+import SectionDivider from '~/components/base/SectionDivider.astro'
+import Comment from '~/components/posts/base/Comment.astro'
+import License from '~/components/posts/base/License.astro'
+import RelatedOpenSourceContributions from '~/components/base/RelatedOpenSourceContributions.astro'
+import { LOCALES, type Locale } from '~/i18n'
+
+export async function getStaticPaths() {
+  const postsByLocale = await Promise.all(LOCALES.map(async (locale) => ({ locale, posts: await getAllPosts(locale) })))
+
+  return postsByLocale.flatMap(({ locale, posts }) =>
+    posts.map((post, index) => ({
+      params: { locale, id: post.id },
+      props: {
+        locale,
+        post,
+        posts,
+        prev: index + 1 < posts.length ? posts[index + 1] : null,
+        next: index > 0 ? posts[index - 1] : null,
+      },
+    }))
+  )
+}
+
+interface Props {
+  locale: Locale
+  post: CollectionEntry<'posts'>
+  posts: CollectionEntry<'posts'>[]
+  prev: CollectionEntry<'posts'> | null
+  next: CollectionEntry<'posts'> | null
+}
+
+const { post, posts, prev, next, locale } = Astro.props as Props
+const { data: frontmatter } = post
+const { Content, headings, remarkPluginFrontmatter } = await render(post)
+
+const filterHeadings = headings.filter((heading: any) => heading.slug !== 'footnote-label')
+
+const hasValidHeadings = filterHeadings.length > 1
+type LayoutKey = 'metaOnly' | 'coverSplit' | 'coverTop'
+
+const layoutMap: Record<LayoutKey, any> = {
+  metaOnly: MetaOnly,
+  coverSplit: CoverSplit,
+  coverTop: CoverTop,
+}
+
+const layoutKey: LayoutKey = (frontmatter.postType as LayoutKey) || (POSTS_CONFIG.postType as LayoutKey)
+const PostLayout = layoutMap[layoutKey]
+---
+
+<Layout
+  title={frontmatter.title}
+  description={frontmatter.description || frontmatter.title}
+  image={frontmatter.ogImage?.src ? `${SITE.website}${frontmatter.ogImage.src}` : SITE.ogImage}
+>
+  <div class="relative flex flex-col justify-between h-fit z-[1]">
+    <TocMobile {post} {posts} headings={filterHeadings} />
+    <PostLayout {frontmatter} minutesRead={remarkPluginFrontmatter.minutesRead} wordCount={remarkPluginFrontmatter.wordCount}>
+      <Content />
+      {
+        frontmatter.license && (
+          <>
+            <hr class="pb-6" />
+            <License license={frontmatter.license} title={frontmatter.title} author={frontmatter.author} />
+          </>
+        )
+      }
+    </PostLayout>
+    <RelatedOpenSourceContributions postId={post.id} {locale} />
+    {
+      posts.length > 1 && (
+        <div class="px-6 sm:px-8 pb-6 sm:pb-8">
+          <PostNavigation {prev} {next} {locale} />
+        </div>
+      )
+    }
+    {hasValidHeadings && <PostFeatures {post} {posts} headings={filterHeadings} />}
+    <SectionDivider />
+    <div class="px-6 py-6 sm:px-8 pb-6 sm:pb-8">
+      <Comment id={post.id} title={frontmatter.title} />
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,48 @@
+---
+import { getMergedPRLabel, OPEN_SOURCE_PROJECTS } from '~/data/open-source'
+import { getLocaleFromPath, localePath } from '~/i18n'
+
+const techKey = (tag: string) => tag.toLowerCase().replaceAll(' ', '-')
+const locale = getLocaleFromPath(Astro.url.pathname)
+---
+
+<div class="grid gap-3">
+  {
+    OPEN_SOURCE_PROJECTS.map((project) => (
+      <article class="group relative overflow-hidden rounded-lg border border-border/70 bg-background px-5 py-5 transition-colors duration-300 hover:bg-muted/30">
+        <div class={`open-source-accent open-source-accent-${project.accent}`} aria-hidden="true"></div>
+        <a
+          href={localePath(locale, `/open-source/${project.slug}`)}
+          class="absolute inset-0 z-[1] rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+          aria-label={`${project.name} · ${getMergedPRLabel(project)}`}
+        ></a>
+        <div class="pointer-events-none relative z-[2] transform transition-transform duration-300 group-hover:translate-x-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h3 class="font-serif text-lg font-medium tracking-tight transition-colors group-hover:text-primary">{project.name}</h3>
+              <p class="mt-1 text-sm leading-6 text-muted-foreground">{project.description}</p>
+            </div>
+            <a
+              href={project.repository}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="pointer-events-auto relative z-[3] inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={`GitHub: ${project.name}`}
+              title={`GitHub: ${project.name}`}
+            >
+              <span class="icon-[mdi--github] size-5"></span>
+            </a>
+          </div>
+          <div class="relative z-[1] mt-4 flex flex-wrap items-center gap-2 pr-4">
+            {project.tags.map((tag) => <span class="tech-tag" data-tech={techKey(tag)}>{tag}</span>)}
+            {
+              <span class="ml-auto inline-flex items-center gap-1 text-sm font-medium text-muted-foreground">
+                {getMergedPRLabel(project)}
+              </span>
+            }
+          </div>
+        </div>
+      </article>
+    ))
+  }
+</div>

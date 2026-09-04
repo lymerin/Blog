@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }} · Blog Manager{% endblock %}
+{% block content %}
+  <header class="page-header"><div><a class="back-link" href="{{ url_for('open_source_list') }}">← Open Source</a><h1>{{ project.name }}</h1><p>{{ project.repository }}</p></div><a class="button primary" href="{{ url_for('contribution_add', project=project.slug) }}">Add PR</a></header>
+  <div class="table-wrap">
+    <table><thead><tr><th>PR</th><th>Issue</th><th>Title</th><th>Merged</th><th>Article</th><th></th></tr></thead><tbody>
+      {% for pr in project.contributions %}<tr><td><a class="text-link" href="{{ pr.url }}" target="_blank" rel="noopener">#{{ pr.number }}</a></td><td>{% if pr.issueNumber %}<a class="text-link" href="{{ pr.issueUrl }}" target="_blank" rel="noopener">#{{ pr.issueNumber }}</a>{% else %}—{% endif %}</td><td>{{ pr.title }}</td><td>{{ pr.mergedAt[:10] }}</td><td>{{ pr.article or '—' }}</td><td><a class="text-link" href="{{ url_for('contribution_edit', project_slug=project.slug, number=pr.number) }}">Edit →</a></td></tr>
+      {% else %}<tr><td colspan="6" class="empty">No merged PRs.</td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+{% endblock %}

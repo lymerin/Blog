@@ -1,0 +1,99 @@
+---
+import { cn } from '~/lib/utils'
+import type { Skill, SkillData } from '~/types'
+
+interface Props {
+  skillsData: SkillData[]
+}
+
+const { skillsData }: Props = Astro.props
+
+const duplicateSkills = (skills: Skill[]) => Array.from({ length: 4 }, () => skills).flat()
+---
+
+<div class="skills-container relative space-y-3 overflow-hidden py-2 px-2 max-md:px-0">
+  {
+    skillsData.map((group: SkillData) => {
+      const duplicatedSkills = duplicateSkills(group.skills)
+
+      return (
+        <section aria-label={group.title}>
+          <div class="group/skill-row relative w-full overflow-hidden">
+            <div
+              class={cn(
+                'flex w-max will-change-transform motion-reduce:animate-none',
+                group.direction === 'right'
+                  ? 'animate-[skills-scroll-reverse_30s_linear_infinite]'
+                  : 'animate-[skills-scroll_30s_linear_infinite]',
+                'group-hover/skill-row:[animation-play-state:paused]'
+              )}
+              style="transform: translateZ(0);"
+            >
+              {duplicatedSkills.map((skill, index) => {
+                const Tag = skill.url ? 'a' : 'div'
+                const props = skill.url ? { href: skill.url, target: '_blank', rel: 'noopener noreferrer' } : {}
+                const isDuplicate = index >= group.skills.length
+
+                return (
+                  <div class="skill-card mx-1" aria-hidden={isDuplicate ? 'true' : undefined}>
+                    <Tag class="skill-inner flex items-center gap-2 whitespace-nowrap px-3 py-1.5 text-foreground transition-colors duration-200" {...props}>
+                      {skill.image ? (
+                        <img src={skill.image} alt="" width="20" height="20" class="size-5 shrink-0 object-contain" loading="lazy" />
+                      ) : (
+                        <span class={cn('flex size-5 shrink-0 items-center justify-center text-muted-foreground', skill.icon)} aria-hidden="true" />
+                      )}
+                      <span class="font-sans text-sm font-medium">{skill.name}</span>
+                    </Tag>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )
+    })
+  }
+
+  <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-[8%] bg-gradient-to-r from-background to-transparent"></div>
+  <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-[8%] bg-gradient-to-l from-background to-transparent"></div>
+</div>
+
+<style is:global>
+  @keyframes skills-scroll {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-25%, 0, 0);
+    }
+  }
+
+  @keyframes skills-scroll-reverse {
+    from {
+      transform: translate3d(-25%, 0, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .skill-card {
+    position: relative;
+    border-radius: 0.375rem;
+    border: 1px solid hsl(var(--tag-border));
+    background: hsl(var(--tag-bg));
+    overflow: hidden;
+    contain: layout style paint;
+    transform: translateZ(0);
+  }
+
+  .skill-inner {
+    position: relative;
+    border-radius: calc(0.375rem - 1px);
+    background: hsl(var(--tag-bg));
+  }
+
+  .skill-inner:hover {
+    background: hsl(var(--tag-bg-hover));
+  }
+</style>

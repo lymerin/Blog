@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Relations · Blog Manager{% endblock %}
+{% block content %}
+  <header class="page-header"><div><h1>Relations</h1><p>唯一关系源是 Open Source contribution 的 article 字段。</p></div></header>
+  <div class="tabs"><a class="{{ 'active' if relation_filter == 'all' }}" href="{{ url_for('relations', filter='all') }}">All</a><a class="{{ 'active' if relation_filter == 'linked' }}" href="{{ url_for('relations', filter='linked') }}">Linked</a><a class="{{ 'active' if relation_filter == 'unlinked' }}" href="{{ url_for('relations', filter='unlinked') }}">Unlinked</a></div>
+  <div class="relation-list">
+    {% for item in rows %}<form class="relation-card" method="post" action="{{ url_for('relation_update', project_slug=item.project.slug, number=item.contribution.number, filter=relation_filter) }}"><div><strong>{{ item.project.name }}</strong><span>PR #{{ item.contribution.number }} · Issue #{{ item.contribution.issueNumber or '—' }}</span></div><label>Related article<select name="article"><option value="">— Unlinked —</option>{% for article in articles %}<option value="{{ article.id }}" {{ 'selected' if item.contribution.article == article.id }}>{{ article.title }} · {{ article.id }}</option>{% endfor %}</select></label><button class="button" type="submit">{{ 'Change' if item.contribution.article else 'Link Article' }}</button>{% if item.contribution.article %}<button class="text-button" type="submit" name="unlink" value="1">Unlink</button>{% endif %}</form>
+    {% else %}<div class="empty panel">No relations in this filter.</div>{% endfor %}
+  </div>
+{% endblock %}

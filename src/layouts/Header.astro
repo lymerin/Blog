@@ -1,0 +1,98 @@
+---
+import { GITHUB_CONFIG, HEADER_LINKS } from '~/config'
+import ThemeToggle from '~/components/theme/ThemeToggle'
+import HeaderGradient from '~/components/theme/HeaderGradient.astro'
+import SectionDivider from '~/components/base/SectionDivider.astro'
+import HeaderLink from '~/components/base/HeaderLink.astro'
+import SearchSwitch from '~/components/base/SearchSwitch.astro'
+import { Image } from 'astro:assets'
+import avatar from '~/assets/avatar.png'
+import LanguageSwitch from '~/components/base/LanguageSwitch.astro'
+import { localePath, t, type Locale, type TranslationKey } from '~/i18n'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+---
+
+<HeaderGradient />
+<header>
+  <div class="mx-auto global-layout-width flex justify-between px-6 sm:px-8 py-4 lg:px-8">
+    <div class="flex gap-3 sm:gap-6 items-center flex-shrink-0">
+      <a
+        href={localePath(locale)}
+        class="group pointer-events-auto select-none rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        aria-label={t(locale, 'a11y.home')}
+      >
+        <Image
+          src={avatar}
+          width={32}
+          height={32}
+          alt="Lin Chun Ho"
+          class="size-8 rounded-lg object-cover transition-transform duration-200 ease-out motion-reduce:transition-none group-hover:scale-110 group-focus-visible:scale-110"
+          densities={[1, 2]}
+          loading="eager"
+        />
+      </a>
+      <nav class="hidden sm:flex gap-1" aria-label={t(locale, 'a11y.mainNav')}>
+        {
+          HEADER_LINKS.map((link) => (
+            <HeaderLink href={localePath(locale, link.url)} background>
+              {t(locale, `nav.${link.name}` as TranslationKey)}
+            </HeaderLink>
+          ))
+        }
+      </nav>
+      <details class="relative sm:hidden group">
+        <summary
+          class="list-none inline-flex items-center justify-center size-8 rounded-md hover:bg-muted cursor-pointer"
+          aria-label={t(locale, 'a11y.openNav')}
+        >
+          <span class="icon-[material-symbols--menu-rounded] size-6 group-open:hidden"></span>
+          <span class="icon-[material-symbols--close-rounded] size-6 hidden group-open:block"></span>
+        </summary>
+        <nav
+          class="absolute left-0 top-11 z-50 min-w-32 rounded-lg border border-border bg-background p-2 shadow-lg"
+          aria-label={t(locale, 'a11y.mobileNav')}
+        >
+          {
+            HEADER_LINKS.map((link) => (
+              <a href={localePath(locale, link.url)} class="block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted">
+                {t(locale, `nav.${link.name}` as TranslationKey)}
+              </a>
+            ))
+          }
+        </nav>
+      </details>
+    </div>
+    <div class="flex gap-2 items-center">
+      <SearchSwitch {locale} />
+      <LanguageSwitch {locale} />
+      {
+        GITHUB_CONFIG.ENABLED && GITHUB_CONFIG.GITHUB_USERNAME && (
+          <a
+            href={`https://github.com/${GITHUB_CONFIG.GITHUB_USERNAME}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center hover:scale-105 size-5 origin-center"
+            aria-label="GitHub"
+            title="GitHub"
+          >
+            <span class="icon-[mdi--github] size-5"></span>
+          </a>
+        )
+      }
+      <ThemeToggle label={t(locale, 'a11y.theme')} client:load />
+    </div>
+  </div>
+  <div class="relative global-layout-width mx-auto pointer-events-none">
+    <div aria-hidden="true" class="absolute inset-x-0 -top-14 bottom-0 mx-auto global-layout-width">
+      <div class="to-(--color-border)/50 absolute bottom-0 left-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"></div>
+      <div class="to-(--color-border)/50 absolute bottom-0 right-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"></div>
+    </div>
+  </div>
+</header>
+
+<SectionDivider className="border-t-border dark:border-t-border/50" />

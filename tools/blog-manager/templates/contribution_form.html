@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Add PR' if mode == 'add' else 'Edit PR' }} · Blog Manager{% endblock %}
+{% block content %}
+  <header class="page-header"><div><a class="back-link" href="{{ url_for('open_source_list') }}">← Open Source</a><h1>{{ 'Add PR' if mode == 'add' else 'Edit PR #' ~ contribution.number }}</h1><p>GitHub 自动读取只负责填表，所有字段仍可手工修改。</p></div></header>
+  {% if mode == 'add' %}<section class="fetch-box"><label>GitHub PR URL<input type="url" data-fetch-url placeholder="https://github.com/owner/repo/pull/123"></label><button class="button" type="button" data-fetch-pr>Fetch</button><span data-fetch-message></span></section>{% endif %}
+  <form class="panel form-grid" method="post" data-pr-form>
+    <label>Project<select name="project" required>{% for project in projects %}<option value="{{ project.slug }}" {{ 'selected' if selected_project == project.slug }} data-repository="{{ project.repository }}">{{ project.name }}</option>{% endfor %}</select></label>
+    <label>Author<input name="author" value="{{ contribution.author or '' }}"></label>
+    <label>PR number<input type="number" min="1" name="number" required value="{{ contribution.number or '' }}"></label>
+    <label>PR URL<input type="url" name="url" required value="{{ contribution.url or '' }}"></label>
+    <label class="wide">PR title<input name="title" required value="{{ contribution.title or '' }}"></label>
+    <label>Merged date<input type="datetime-local" name="mergedAt" required value="{{ (contribution.mergedAt or '')[:16] }}"></label>
+    <label>Related article<select name="article"><option value="">No article</option>{% for article in articles %}<option value="{{ article.id }}" {{ 'selected' if contribution.article == article.id }}>{{ article.title }} · {{ article.id }}</option>{% endfor %}</select></label>
+    <label>Issue number<input type="number" min="1" name="issueNumber" value="{{ contribution.issueNumber or '' }}"></label>
+    <label>Issue URL<input type="url" name="issueUrl" value="{{ contribution.issueUrl or '' }}"></label>
+    <label class="wide">Summary · zh-CN<textarea name="summaryZhCn" rows="3">{{ contribution.summary['zh-cn'] if contribution.summary else '' }}</textarea></label>
+    <label class="wide">Summary · zh-HK<textarea name="summaryZhHk" rows="3">{{ contribution.summary['zh-hk'] if contribution.summary else '' }}</textarea></label>
+    <div class="wide form-actions"><button class="button primary" type="submit">{{ 'Add PR' if mode == 'add' else 'Save PR' }}</button></div>
+  </form>
+  {% if mode == 'edit' %}<section class="danger-zone"><h2>Delete contribution</h2><p>输入 <code>PR #{{ contribution.number }}</code> 后才能删除。</p><form method="post" action="{{ url_for('contribution_delete', project_slug=selected_project, number=contribution.number) }}" data-confirm-form="Delete this PR contribution?"><input name="confirmation" placeholder="PR #{{ contribution.number }}" required><button class="button danger" type="submit">Delete</button></form></section>{% endif %}
+{% endblock %}

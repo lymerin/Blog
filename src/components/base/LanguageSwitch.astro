@@ -1,0 +1,33 @@
+---
+import { localePath, t, type Locale } from '~/i18n'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const targetLocale: Locale = locale === 'zh-cn' ? 'zh-hk' : 'zh-cn'
+const targetLabel = locale === 'zh-cn' ? '繁' : '简'
+const targetPath = localePath(targetLocale, Astro.url.pathname)
+---
+
+<a
+  href={targetPath}
+  data-locale-target={targetLocale}
+  class="inline-flex size-7 items-center justify-center rounded-md text-sm font-medium hover:bg-muted"
+  aria-label={t(locale, 'a11y.language')}
+  title={t(locale, 'a11y.language')}
+>
+  {targetLabel}
+</a>
+
+<script>
+  document.addEventListener('click', (event) => {
+    const target = (event.target as HTMLElement).closest<HTMLElement>('[data-locale-target]')
+    if (target?.dataset.localeTarget) {
+      try {
+        localStorage.setItem('blog-locale', target.dataset.localeTarget)
+      } catch {}
+    }
+  })
+</script>
