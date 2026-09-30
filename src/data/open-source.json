@@ -41,6 +41,20 @@
     ],
     "contributions": [
       {
+        "number": 7372,
+        "issueNumber": 6526,
+        "issueUrl": "https://github.com/apache/shenyu/issues/6526",
+        "title": "fix: update ZooKeeper instance cache when the last child is removed",
+        "url": "https://github.com/apache/shenyu/pull/7372",
+        "mergedAt": "2026-09-29T17:07:31Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "让 ZooKeeper Watcher 将空子节点列表也写入实例缓存，避免最后一个实例删除后仍返回旧数据，并覆盖实例数量 1 → 0 → 1 的状态变化。",
+          "zh-hk": "讓 ZooKeeper Watcher 將空子節點列表也寫入實例快取，避免最後一個實例刪除後仍傳回舊資料，並覆蓋實例數量 1 → 0 → 1 的狀態變化。"
+        },
+        "article": "shenyu-pr7372"
+      },
+      {
         "number": 7012,
         "issueNumber": 6735,
         "issueUrl": "https://github.com/apache/shenyu/issues/6735",

@@ -1,7 +1,7 @@
 ---
 title: '从 refresh() 追到 TCP Server：第一次参与 Apache ShenYu 的 Bug 修复'
 description: '记录我第一次在 Apache ShenYu 中完整处理一个 Issue 的过程，以及读代码、修复问题时的一些收获。'
-pubDate: 2026-10-01
+pubDate: 2026-10-01T01:29:33+08:00
 tags:
   - Apache ShenYu
   - Java
