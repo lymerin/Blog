@@ -16,7 +16,7 @@ import type {
 export const SITE: Site = {
   title: 'Lin Chun Ho',
   description: 'Lin Chun Ho 的个人技术博客，记录 Java 后端、开源贡献与学习笔记。',
-  website: 'http://localhost:4321/',
+  website: 'https://lymerinblog.z7.web.core.windows.net/',
   lang: 'zh-CN',
   base: '/',
   author: 'Lin Chun Ho',

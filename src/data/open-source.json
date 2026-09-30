@@ -64,7 +64,8 @@
         "summary": {
           "zh-cn": "修复 HTTP 全量同步收到空快照后旧 proxy selector 运行时数据未清理的问题，并安全关闭缓存的 TCP bootstrap servers。",
           "zh-hk": "修正 HTTP 全量同步收到空快照後舊 proxy selector 執行階段資料未有清理的問題，並安全關閉快取的 TCP bootstrap servers。"
-        }
+        },
+        "article": "shenyu-pr6909"
       }
     ],
     "accent": "shenyu"
