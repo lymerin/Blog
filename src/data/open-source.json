@@ -51,7 +51,8 @@
         "summary": {
           "zh-cn": "通过按 selector 的 single-flight 创建机制，避免并发同步时重复启动 TCP bootstrap server，并补全失败回滚与幂等关闭处理。",
           "zh-hk": "透過按 selector 的 single-flight 建立機制，避免並行同步時重複啟動 TCP bootstrap server，並補全失敗回滾與冪等關閉處理。"
-        }
+        },
+        "article": "shenyu-pr7012"
       },
       {
         "number": 6909,
