@@ -23,7 +23,7 @@
           "zh-cn": "避免 Spring Rabbit listener 消费消息时重复创建 process span 和 messaging.process.duration 指标，同时保留原生 RabbitMQ 消费场景的遥测。",
           "zh-hk": "避免 Spring Rabbit listener 消費訊息時重複建立 process span 和 messaging.process.duration 指標，同時保留原生 RabbitMQ 消費場景的遙測。"
         },
-        "article": "example-otel"
+        "article": "opentelemetry-pr19732"
       }
     ],
     "accent": "otel"
