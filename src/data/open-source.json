@@ -41,6 +41,20 @@
     ],
     "contributions": [
       {
+        "number": 7380,
+        "issueNumber": 7379,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7379",
+        "title": "fix(ci): handle k3s download failures and missing kubeconfig in install retries",
+        "url": "https://github.com/apache/shenyu/pull/7380",
+        "mergedAt": "2026-09-30T21:52:40Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "让 k3s 下载失败正确进入重试，并将非空 kubeconfig 作为安装成功条件，补充离线测试覆盖下载失败、配置缺失与空文件等场景。",
+          "zh-hk": "讓 k3s 下載失敗正確進入重試，並以非空 kubeconfig 作為安裝成功條件，補充離線測試涵蓋下載失敗、設定檔缺失及空檔案等情況。"
+        },
+        "article": "shenyu-pr7380"
+      },
+      {
         "number": 7372,
         "issueNumber": 6526,
         "issueUrl": "https://github.com/apache/shenyu/issues/6526",
