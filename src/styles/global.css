@@ -236,6 +236,10 @@ html {
   background: hsl(var(--tech-shenyu));
 }
 
+.open-source-accent-browserskill {
+  background: hsl(var(--primary));
+}
+
 /* ===== 基础样式 ===== */
 @layer base {
   * {

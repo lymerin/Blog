@@ -22,7 +22,7 @@ export type OpenSourceProject = {
   description: string
   tags: string[]
   contributions: OpenSourceContribution[]
-  accent: 'otel' | 'shenyu'
+  accent: 'otel' | 'shenyu' | 'browserskill'
 }
 
 export const OPEN_SOURCE_PROJECTS = openSourceData as OpenSourceProject[]

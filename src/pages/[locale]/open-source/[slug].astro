@@ -2,6 +2,7 @@
 import Layout from '~/layouts/Layout.astro'
 import { getMergedPRLabel, OPEN_SOURCE_PROJECTS, type OpenSourceProject } from '~/data/open-source'
 import { LOCALES, localePath, t, type Locale } from '~/i18n'
+import { getAllPosts } from '~/lib/data'
 
 export function getStaticPaths() {
   return LOCALES.flatMap((locale) =>
@@ -18,6 +19,7 @@ interface Props {
 }
 
 const { locale, project } = Astro.props as Props
+const availableArticles = new Set((await getAllPosts(locale)).map((post) => post.id))
 const dateFormatter = new Intl.DateTimeFormat(locale === 'zh-hk' ? 'zh-HK' : 'zh-CN', {
   year: 'numeric',
   month: 'long',
@@ -104,7 +106,7 @@ const dateFormatter = new Intl.DateTimeFormat(locale === 'zh-hk' ? 'zh-HK' : 'zh
                   <span class="icon-[mdi--github] size-4"></span>
                   {t(locale, 'openSource.github')}
                 </a>
-                {contribution.article && (
+                {contribution.article && availableArticles.has(contribution.article) && (
                   <a
                     href={localePath(locale, `/posts/${contribution.article}`)}
                     class="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-foreground"

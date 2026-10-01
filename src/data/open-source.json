@@ -112,5 +112,29 @@
       }
     ],
     "accent": "shenyu"
+  },
+  {
+    "slug": "browserskill",
+    "name": "Tencent BrowserSkill",
+    "repository": "https://github.com/Tencent/BrowserSkill",
+    "description": "Browser automation for AI agents through your real browser",
+    "tags": ["TypeScript", "CDP", "Browser Automation"],
+    "contributions": [
+      {
+        "number": 311,
+        "issueNumber": 242,
+        "issueUrl": "https://github.com/Tencent/BrowserSkill/issues/242",
+        "title": "fix(input): harden readiness around persistent background leases",
+        "url": "https://github.com/Tencent/BrowserSkill/pull/311",
+        "mergedAt": "2026-09-29T08:12:29Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "明确输入 readiness 与持久后台 lease 的状态所有权边界；在 lease 已被持有但页面仍 hidden 时明确拒绝输入，避免临时清理覆盖持久状态和静默成功。",
+          "zh-hk": "釐清輸入 readiness 與持久背景 lease 的狀態所有權邊界；當 lease 已被持有但頁面仍為 hidden 時明確拒絕輸入，避免臨時清理覆蓋持久狀態及靜默成功。"
+        },
+        "article": "browserskill-pr311"
+      }
+    ],
+    "accent": "browserskill"
   }
 ]
