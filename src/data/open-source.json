@@ -41,6 +41,20 @@
     ],
     "contributions": [
       {
+        "number": 7289,
+        "issueNumber": 6479,
+        "issueUrl": "https://github.com/apache/shenyu/issues/6479",
+        "title": "fix(discovery): remove stale gateway cache on upstream deletion",
+        "url": "https://github.com/apache/shenyu/pull/7289",
+        "mergedAt": "2026-09-30T22:27:47Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "补齐 selector 级 discovery upstream 删除的插件清理链路，通过 HTTP 快照对比识别消失或改名的记录，并处理 TCP 身份映射和 Admin 批量删除校验。",
+          "zh-hk": "補齊 selector 級 discovery upstream 刪除的插件清理鏈路，透過 HTTP 快照比較識別消失或改名的記錄，並處理 TCP 身份映射及 Admin 批次刪除檢查。"
+        },
+        "article": "shenyu-pr7289"
+      },
+      {
         "number": 7380,
         "issueNumber": 7379,
         "issueUrl": "https://github.com/apache/shenyu/issues/7379",
