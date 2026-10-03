@@ -10,6 +10,7 @@ tags:
   - 状态一致性
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/browserskill-pr311-light.png'
 ---
 
 这次贡献，是从一个已经修好的 Issue 开始的。

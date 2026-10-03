@@ -14,12 +14,12 @@ import type {
 
 //--- Readme Page Config ---
 export const SITE: Site = {
-  title: 'Lin Chun Ho',
-  description: 'Lin Chun Ho 的个人技术博客，记录 Java 后端、开源贡献与学习笔记。',
+  title: 'Lymerin',
+  description: 'Lymerin 的个人技术博客，记录 Java 后端、开源贡献与学习笔记。',
   website: 'https://lymerinblog.z7.web.core.windows.net/',
   lang: 'zh-CN',
   base: '/',
-  author: 'Lin Chun Ho',
+  author: 'Lymerin',
   ogImage: '/avatar-icon.png',
   transition: false,
   themeAnimation: false,
@@ -148,9 +148,9 @@ export const GITHUB_CONFIG: GithubConfig = {
 //--- Posts Page Config ---
 export const POSTS_CONFIG: PostConfig = {
   title: '文章',
-  description: 'Lin Chun Ho 的技术文章与学习记录。',
+  description: 'Lymerin 的技术文章与学习记录。',
   introduce: '记录 Java 后端、开源参与、学习笔记与技术思考。',
-  author: 'Lin Chun Ho',
+  author: 'Lymerin',
   homePageConfig: {
     size: 2,
     type: 'compact',
@@ -191,7 +191,7 @@ export const TAGS_CONFIG: TagsConfig = {
 
 export const PROJECTS_CONFIG: ProjectConfig = {
   title: '项目',
-  description: 'Lin Chun Ho 的项目与实践。',
+  description: 'Lymerin 的项目与实践。',
   introduce: '真实项目将在这里持续补充。',
 }
 

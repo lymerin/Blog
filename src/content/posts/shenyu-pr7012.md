@@ -11,6 +11,7 @@ tags:
   - AI 协作
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7012-light.png'
 ---
 
 [上一篇](/zh-cn/posts/shenyu-pr6909)记录了我第一次在 ShenYu 中完整处理一个 Issue。那次，我更多是在学习怎么从问题入口出发，沿着调用链往下读。第二次遇到的问题，表面上反而更简单：检查缓存，没有就创建一个 TCP Server，再放进缓存。

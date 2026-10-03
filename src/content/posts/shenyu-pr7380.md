@@ -11,6 +11,7 @@ tags:
   - 故障排查
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7380-light.png'
 ---
 
 这次修复，是从另一个 PR 的红灯里找出来的。

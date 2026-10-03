@@ -9,6 +9,7 @@ tags:
   - 资源生命周期
   - 并发安全
 draft: false
+cover: '../../assets/covers/shenyu-pr6909-light.png'
 postType: metaOnly
 ---
 

@@ -10,6 +10,7 @@ tags:
   - 缓存一致性
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7372-light.png'
 ---
 
 当时我正在维护另一个 ShenYu PR [#7289](https://github.com/apache/shenyu/pull/7289)。维护者让我处理 merge conflicts，在等待和重新跑测试的间隙，我又翻了一下项目里的 Issue，看到了 [#6526](https://github.com/apache/shenyu/issues/6526)。

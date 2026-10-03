@@ -10,6 +10,7 @@ tags:
   - Code Review
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7289-light.png'
 ---
 
 刚接下 [Issue #6479](https://github.com/apache/shenyu/issues/6479) 时，我以为自己要补的，只是一次遗漏的缓存删除。

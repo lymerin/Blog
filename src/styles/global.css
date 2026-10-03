@@ -97,10 +97,13 @@ html {
     --scrollbar-bg: 220 25% 95%;
 
     /* 低饱和技术标签 */
-    --tech-java: 28 55% 45%;
+    --tech-java: 28 44% 43%;
+    --tech-typescript: 210 36% 40%;
+    --tech-bash: 142 22% 35%;
     --tech-spring: 118 28% 40%;
     --tech-otel: 218 35% 48%;
     --tech-shenyu: 184 32% 39%;
+    --tech-browserskill: 258 32% 44%;
     --tech-redis: 2 38% 48%;
     --tech-kafka: 274 24% 48%;
     --tech-docker: 205 38% 48%;
@@ -141,10 +144,13 @@ html {
     --tag-text: 240 15% 85%;
     --scrollbar: 240 10% 30%;
     --scrollbar-bg: 240 10% 15%;
-    --tech-java: 30 54% 67%;
+    --tech-java: 30 44% 69%;
+    --tech-typescript: 210 40% 70%;
+    --tech-bash: 142 25% 65%;
     --tech-spring: 118 27% 64%;
     --tech-otel: 216 42% 70%;
     --tech-shenyu: 184 35% 66%;
+    --tech-browserskill: 258 38% 73%;
     --tech-redis: 2 43% 70%;
     --tech-kafka: 274 30% 72%;
     --tech-docker: 205 44% 70%;
@@ -176,6 +182,18 @@ html {
   background: hsl(var(--tech-spring) / 0.08);
 }
 
+.tech-tag[data-tech='typescript'] {
+  border-color: hsl(var(--tech-typescript) / 0.28);
+  color: hsl(var(--tech-typescript));
+  background: hsl(var(--tech-typescript) / 0.08);
+}
+
+.tech-tag[data-tech='bash'] {
+  border-color: hsl(var(--tech-bash) / 0.28);
+  color: hsl(var(--tech-bash));
+  background: hsl(var(--tech-bash) / 0.08);
+}
+
 .tech-tag[data-tech='opentelemetry'] {
   border-color: hsl(var(--tech-otel) / 0.3);
   color: hsl(var(--tech-otel));
@@ -187,6 +205,12 @@ html {
   border-color: hsl(var(--tech-shenyu) / 0.3);
   color: hsl(var(--tech-shenyu));
   background: hsl(var(--tech-shenyu) / 0.08);
+}
+
+.tech-tag:is([data-tech='browserskill'], [data-tech='tencent-browserskill']) {
+  border-color: hsl(var(--tech-browserskill) / 0.3);
+  color: hsl(var(--tech-browserskill));
+  background: hsl(var(--tech-browserskill) / 0.08);
 }
 
 .tech-tag[data-tech='redis'] {
@@ -237,7 +261,7 @@ html {
 }
 
 .open-source-accent-browserskill {
-  background: hsl(var(--primary));
+  background: hsl(var(--tech-browserskill));
 }
 
 /* ===== 基础样式 ===== */

@@ -11,6 +11,7 @@ tags:
   - 版本兼容
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/opentelemetry-pr19732-light.png'
 ---
 
 这是我到目前为止做过最折磨的一次开源修改。
