@@ -2,8 +2,10 @@
 title: 'Issue 已经修好了，为什么还要补一个 PR：BrowserSkill 后台输入的状态加固'
 description: '原本想修一个后台点击失效的 Issue，却发现它早已解决。继续读代码后，我追到了临时输入唤醒与持久后台 lease 的交互边界，也在 Review 和故障注入中重新理解了状态所有权。'
 pubDate: 2026-10-01T15:47:25+08:00
+category: open-source
 tags:
   - BrowserSkill
+  - Agent
   - TypeScript
   - CDP
   - 浏览器自动化

@@ -2,6 +2,7 @@
 title: '从一把锁的争论到 Single-Flight：Apache ShenYu TCP 并发创建修复'
 description: '第二次参与 ShenYu：记录一次 TCP Server 并发问题的方案取舍，以及几个 AI 给出不同答案之后，我是怎么继续判断的。'
 pubDate: 2026-10-01T02:15:22+08:00
+category: open-source
 tags:
   - Apache ShenYu
   - Java

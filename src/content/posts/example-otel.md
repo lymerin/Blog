@@ -2,6 +2,7 @@
 title: 'OpenTelemetry #19732：Spring Rabbit 重复 Telemetry 问题复盘'
 description: '文章内容待补充。'
 pubDate: 2026-09-04
+category: open-source
 tags:
   - OpenTelemetry
   - Java

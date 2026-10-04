@@ -2,6 +2,7 @@
 title: '代码能跑还不够：一次 OpenTelemetry Review 教会我的事'
 description: '从 Spring Rabbit 重复遥测到反复修改方案，记录我在 OpenTelemetry PR #19732 中遇到的 review、版本兼容问题，以及进入大型仓库时想法的变化。'
 pubDate: 2026-10-01T11:26:38+08:00
+category: open-source
 tags:
   - OpenTelemetry
   - Java Agent

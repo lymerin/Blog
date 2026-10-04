@@ -2,6 +2,7 @@
 title: '一个 DELETE 为什么改了 31 个文件：Apache ShenYu 删除链路与一次方案澄清'
 description: '从 discovery upstream 缓存残留，到第一次面对方案级质疑：记录我如何追查删除链路、对照另一个 PR，并用事件来源和测试讲清 instance 与 selector 的边界。'
 pubDate: 2026-10-01T14:50:28+08:00
+category: open-source
 tags:
   - Apache ShenYu
   - Java

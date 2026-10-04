@@ -2,6 +2,7 @@ import { glob } from 'astro/loaders'
 import { defineCollection } from 'astro:content'
 import { z } from 'astro/zod'
 import { POSTS_CONFIG } from '~/config'
+import { POST_CATEGORIES } from '~/lib/post-categories'
 import type { CoverLayout, PostType } from '~/types'
 
 const posts = defineCollection({
@@ -16,6 +17,7 @@ const posts = defineCollection({
         description: z.string(),
         pubDate: z.date(),
         tags: z.array(z.string()).optional(),
+        category: z.enum(POST_CATEGORIES),
         updatedDate: z.date().optional(),
         author: z.string().default(POSTS_CONFIG.author),
         cover: image().optional(),

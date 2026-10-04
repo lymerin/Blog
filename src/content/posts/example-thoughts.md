@@ -2,6 +2,7 @@
 title: '为什么开始重新记录技术博客'
 description: '文章内容待补充。'
 pubDate: 2026-09-04
+category: notes
 tags:
   - Blog
   - Engineering

@@ -2,6 +2,7 @@
 title: '当“没有实例”也是一次更新：Apache ShenYu ZooKeeper 缓存残留修复'
 description: '维护另一个 PR 的间隙，我遇到了一个很小的缓存问题。顺着空列表往下看，才发现“没有实例”和“没有更新”其实是两回事。'
 pubDate: 2026-10-01T02:54:10+08:00
+category: open-source
 tags:
   - Apache ShenYu
   - Java

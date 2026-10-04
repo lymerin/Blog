@@ -2,6 +2,7 @@
 title: 'CI 红了，不一定是代码错了：第一次排查 Apache ShenYu CI 故障'
 description: '维护一个 PR 时，我被一次 k3s 安装失败卡住了。从没有重跑权限，到用假的 curl 稳定复现问题，再第一次主动找维护者讨论，记录这次 CI 排查的过程。'
 pubDate: 2026-10-01T13:06:56+08:00
+category: open-source
 tags:
   - Apache ShenYu
   - GitHub Actions

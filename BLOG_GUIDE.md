@@ -31,6 +31,7 @@ pnpm preview
 title: "文章标题"
 description: "文章摘要"
 pubDate: 2026-09-04
+category: notes
 tags:
   - Java
   - Engineering
@@ -45,6 +46,7 @@ draft: true
 title: "文章标题"                 # 必填，字符串
 description: "文章摘要"           # 必填，字符串
 pubDate: 2026-09-04               # 必填，日期
+category: notes                  # 必填：open-source / notes
 tags: [Java, Engineering]         # 可选，字符串数组
 updatedDate: 2026-09-05           # 可选，日期
 author: "De Lin"                 # 可选，默认取全局作者
@@ -69,11 +71,18 @@ license: "CC BY-NC-SA 4.0"       # 可选
 
 准备发布时改为 `draft: false`，或删除该字段（默认是 `false`）。
 
-## Tags
+## 文章分类与 Tags
 
 直接在文章 Frontmatter 的 `tags` 数组中增加标签。标签页和聚合页会自动生成，不需要手工维护。
 
-建议同时保留内容类标签（如 `Engineering`、`Notes`、`Thoughts`、`Misc`）与技术标签（如 `Java`、`OpenTelemetry`、`Redis`）。
+每篇文章通过 `category` 明确选择一个内容分类：
+
+- `open-source`：开源实践，例如贡献复盘、项目源码阅读和 Issue 排查。
+- `notes`：技术笔记，例如 Agent / LLM 学习、技术实验和工程知识整理。
+
+分类不会根据标签或 PR ↔ Article 关系自动推断。`tags` 用于技术标签（如 `Agent`、`LLM`、`Java`）和项目标签（如 `BrowserSkill`、`Apache ShenYu`、`OpenTelemetry`），同一标签可以出现在不同分类中。`Java Agent` 指 Java instrumentation，不等于 AI Agent。
+
+使用 Blog Manager 导入文章时，也需在 Markdown Frontmatter 中填写 `category`；管理工具会保留这个字段。缺少分类或填写无效分类会在构建时报告错误，不会静默猜测分类。
 
 ## Markdown / MDX
 
