@@ -1,0 +1,191 @@
+name: Blog build and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: blog-${{ github.event.pull_request.number || github.ref }}
+  # Never interrupt production while it is uploading files; replace outdated PR runs.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Build and check
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: '11.25.0'
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check deployment safeguards
+        run: node scripts/deploy/test.mjs
+      - name: Build including type checks and search
+        run: pnpm build
+      - name: Check static output
+        run: node scripts/deploy/prepare.mjs check
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: blog-dist-${{ github.run_id }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  production:
+    name: Deploy production
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      STORAGE_ACCOUNT: ${{ vars.BLOG_STORAGE_ACCOUNT }}
+      SITE_URL: ${{ vars.BLOG_SITE_URL }}
+      AZURE_CORE_OUTPUT: none
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Skip outdated main revisions
+        id: revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          current=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
+          if [[ "$current" == "$GITHUB_SHA" ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'Newer main exists; this revision will not deploy.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        if: steps.revision.outputs.current == 'true'
+        with:
+          name: blog-dist-${{ github.run_id }}
+          path: dist/
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: steps.revision.outputs.current == 'true'
+        with:
+          node-version: '24'
+      - name: Prepare ordered upload batches
+        if: steps.revision.outputs.current == 'true'
+        run: |
+          test -n "$STORAGE_ACCOUNT" && test -n "$SITE_URL"
+          node scripts/deploy/prepare.mjs production
+      - name: Authenticate to Azure without a stored password
+        if: steps.revision.outputs.current == 'true'
+        uses: Azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+        with:
+          client-id: ${{ vars.BLOG_AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.BLOG_AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.BLOG_AZURE_SUBSCRIPTION_ID }}
+      - name: Back up current website before overwriting
+        if: steps.revision.outputs.current == 'true'
+        run: |
+          mkdir -p .astro/deployment-backup
+          az storage blob download-batch --account-name "$STORAGE_ACCOUNT" \
+            --source '$web' --destination .astro/deployment-backup \
+            --auth-mode login --max-connections 8 --only-show-errors
+      - name: Keep recovery artifact
+        if: steps.revision.outputs.current == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: production-before-${{ github.run_id }}
+          path: .astro/deployment-backup/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload assets, then pages, then search manifest
+        if: steps.revision.outputs.current == 'true'
+        run: |
+          for group in assets support pages search; do
+            cache='no-cache'
+            if [[ "$group" == assets ]]; then cache='public,max-age=31536000,immutable'; fi
+            az storage blob upload-batch --account-name "$STORAGE_ACCOUNT" \
+              --destination '$web' --source ".astro/deployment-upload/$group" \
+              --auth-mode login --overwrite true --validate-content \
+              --content-cache-control "$cache" --only-show-errors
+          done
+      - name: Verify public site and deployed revision
+        if: steps.revision.outputs.current == 'true'
+        run: |
+          node scripts/deploy/verify.mjs "$SITE_URL" production
+          printf 'Production: %s\nCommit: %s\n' "$SITE_URL" "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+
+  preview:
+    name: Deploy PR preview
+    needs: build
+    if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      # Run trusted deployment helpers, not programs from the PR artifact.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: blog-dist-${{ github.run_id }}
+          path: dist/
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+      - name: Disable indexing of preview only
+        run: node scripts/deploy/prepare.mjs preview
+      - name: Publish isolated PR environment
+        id: publish
+        uses: Azure/static-web-apps-deploy@4d27395796ac319302594769cfe812bd207490b1 # v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.BLOG_PREVIEW_DEPLOY_TOKEN }}
+          repo_token: ${{ github.token }}
+          action: upload
+          app_location: dist
+          output_location: ''
+          api_location: ''
+          skip_app_build: true
+          skip_api_build: true
+          production_branch: main
+      - name: Verify preview and show link
+        env:
+          PREVIEW_URL: ${{ steps.publish.outputs.static_web_app_url }}
+        run: |
+          node scripts/deploy/verify.mjs "$PREVIEW_URL" preview
+          printf 'PR preview: %s\nSource commit: %s\n' "$PREVIEW_URL" "$SOURCE_SHA" >> "$GITHUB_STEP_SUMMARY"
+
+  close-preview:
+    name: Clean up closed PR preview
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Remove only this PR environment
+        uses: Azure/static-web-apps-deploy@4d27395796ac319302594769cfe812bd207490b1 # v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.BLOG_PREVIEW_DEPLOY_TOKEN }}
+          action: close
+          app_location: dist
