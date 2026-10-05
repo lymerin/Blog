@@ -1,7 +1,7 @@
 ---
 title: '一个多出来的 n，为什么不能只删掉：Apache ShenYu Registry 地址重写修复'
 description: '从 nnamespace 这个小错误出发，我发现仅仅去掉一个 + 1，还会留下参数丢失和误截地址的问题。记录这次使用 Dubbo URL 模型修复 Registry 地址重写，以及围绕相邻输入补充测试的过程。'
-pubDate: 2026-10-05T05:10:05+08:00
+pubDate: 2026-10-05T15:16:43+08:00
 category: open-source
 tags:
   - Apache ShenYu
