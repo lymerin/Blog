@@ -41,6 +41,20 @@
     ],
     "contributions": [
       {
+        "number": 7425,
+        "issueNumber": 6516,
+        "issueUrl": "https://github.com/apache/shenyu/issues/6516",
+        "title": "fix(dubbo): preserve registry address when rewriting namespace",
+        "url": "https://github.com/apache/shenyu/pull/7425",
+        "mergedAt": "2026-10-04T11:17:36Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "使用 Dubbo URL 模型替换 Registry 地址中的 namespace 参数，保留其余地址组件与参数，并补充普通和 upstream Reference 路径的回归测试，确保原始配置不变。",
+          "zh-hk": "使用 Dubbo URL 模型替換 Registry 地址中的 namespace 參數，保留其餘地址組件與參數，並補充普通及 upstream Reference 路徑的迴歸測試，確保原始設定不變。"
+        },
+        "article": "shenyu-pr7425"
+      },
+      {
         "number": 7289,
         "issueNumber": 6479,
         "issueUrl": "https://github.com/apache/shenyu/issues/6479",
