@@ -41,6 +41,20 @@
     ],
     "contributions": [
       {
+        "number": 7426,
+        "issueNumber": 6606,
+        "issueUrl": "https://github.com/apache/shenyu/issues/6606",
+        "title": "refactor(admin): remove unused deprecated registration lock subsystem",
+        "url": "https://github.com/apache/shenyu/pull/7426",
+        "mergedAt": "2026-10-06T02:21:30Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "清理已无仓库内生产消费者的旧注册锁类型、Bean 和相关测试，保留现有 context-path 加锁、集群选主及数据库机制，并明确公开 API 的兼容性影响。",
+          "zh-hk": "清理已無倉庫內生產消費者的舊註冊鎖類型、Bean 及相關測試，保留現有 context-path 加鎖、叢集選主及資料庫機制，並說明公開 API 的兼容性影響。"
+        },
+        "article": "shenyu-pr7426"
+      },
+      {
         "number": 7425,
         "issueNumber": 6516,
         "issueUrl": "https://github.com/apache/shenyu/issues/6516",
