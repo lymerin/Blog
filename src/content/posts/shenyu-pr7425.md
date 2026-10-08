@@ -11,6 +11,7 @@ tags:
   - 回归测试
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7425-light.png'
 ---
 
 这次问题，最先让我注意到的是一个多出来的 `n`。
