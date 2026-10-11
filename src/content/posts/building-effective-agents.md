@@ -1,6 +1,6 @@
 ---
-title: 'Building Effective Agents：Workflow 与 Agent 应该怎么选？'
-description: '从任务结构出发，理解 Workflow 与 Agent 的区别，逐个拆解五种常见 Workflow 的工作方式、适用场景与代价，再整理 Agent 的运行机制和选型思路。'
+title: '理解 Workflow 与 Agent：五种工作流与智能体的运行原理'
+description: '理解固定步骤、分类分流、并行处理、动态拆分与反馈迭代背后的任务结构，以及 Workflow 与 Agent 在执行控制上的区别。'
 pubDate: 2026-10-08T17:45:04+08:00
 updatedDate: 2026-10-11
 category: notes
@@ -9,56 +9,13 @@ draft: false
 postType: metaOnly
 ---
 
-读 [Anthropic 的《Building effective agents》](https://www.anthropic.com/engineering/building-effective-agents)，我最认同的是它的出发点：**先看任务有什么结构，再选择足够简单的实现方式。** 重点不是怎样搭出一个更复杂的 Agent，而是哪些地方确实需要模型自主决定。
+同样是调用模型和工具，有的任务适合按顺序推进，有的需要先分类、并行处理，或根据反馈反复修改。还有一些任务，下一步要做什么，只能等拿到新的信息后再判断。**这些执行方式的差别，首先来自任务本身的结构。**
 
-有些任务步骤固定，按顺序处理就够了；有些任务需要分类、并行或反复修改，也可以用明确的 Workflow 完成。只有当执行路线本身难以提前确定，下一步必须根据刚获得的信息来决定时，Agent 的灵活性才真正有价值。
+读 [Anthropic 的《Building effective agents》](https://www.anthropic.com/engineering/building-effective-agents)，我关注的是：**任务怎样组织，执行过程由谁决定。** 原文将这些系统统称为 Agentic Systems，区分为 Workflow 与 Agent。本文从三个层次展开：
 
-这篇笔记沿着这条主线展开：先区分 Workflow 与 Agent，再逐个拆解五种 Workflow，最后说明 Agent 怎样运行，以及如何在它们之间做选择。例子是为了把结构讲清楚，而不是给某一种模式贴上“更高级”的标签。
-
-## 知识地图：先看分类，再看任务结构
-
-原文把这些系统统称为 **Agentic Systems**，按控制结构区分为 **Workflow** 和 **Agent**。本文围绕这两类结构展开：它们是什么，五种 Workflow 分别怎样组织任务，以及什么时候需要 Agent。
-
-原文另外把具备 Retrieval、Tools、Memory 的模型称为 **Augmented LLM**，作为这些系统共同使用的能力底座。这里不展开，重点是这些能力如何被组织成 Workflow 或 Agent。
-
-<figure class="not-prose" style="margin:1.75em 0;">
-<figcaption style="margin:0 0 .75rem; color:hsl(var(--muted-foreground)); font-size:.8125rem; line-height:1.7;">图 1 · Agentic Systems：两类控制结构，五种 Workflow</figcaption>
-<div tabindex="0" role="region" aria-label="图 1 · Agentic Systems：两类控制结构，五种 Workflow" style="overflow-x:auto; max-width:100%; border-radius:16px; padding:8px 0; background:hsl(var(--background));">
-<svg class="agents-flow" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="effective-agents-patterns-title effective-agents-patterns-desc" viewBox="0 0 640 474" style="display:block; width:100%; min-width:540px; height:auto; font-family:var(--font-sans); --node:light-dark(#e8f3fc,#142b3e); --condition:light-dark(#f4f9fe,#102333); --ink:light-dark(#235e89,#c0def4); --border:light-dark(#d0e0ed,#355167); --line:light-dark(#8e959d,#8295a6); --success:light-dark(#e5f6eb,#152f26); --success-ink:light-dark(#286447,#a9debf); --success-border:light-dark(#afd3bc,#426c57); --warn:light-dark(#fff3d7,#352918); --warn-ink:light-dark(#8b5b22,#f3ce8d); --warn-border:light-dark(#e8c98e,#80663a);">
-<title id="effective-agents-patterns-title">Agentic Systems 的分类</title>
-<desc id="effective-agents-patterns-desc">Agentic Systems 分为 Workflow 与 Agent。Workflow 的整体执行结构由程序预先设计，包含固定顺序的 Prompt Chaining、分类分流的 Routing、并行处理的 Parallelization、动态拆分的 Orchestrator-Workers，以及反馈迭代的 Evaluator-Optimizer。Agent 则由模型依据环境反馈动态决定执行过程。</desc>
-<defs><marker id="effective-agents-patterns-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 2 L6 5 L2 8" fill="none" stroke="var(--line)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<rect x="200" y="18" width="240" height="66" rx="20" fill="var(--node)" stroke="var(--border)"/>
-<text x="320" y="47" text-anchor="middle" fill="var(--ink)" font-size="18" font-weight="500">Agentic Systems</text>
-<text x="320" y="71" text-anchor="middle" fill="var(--ink)" font-size="13">按执行过程由谁决定来区分</text>
-<g fill="none" stroke="var(--line)" stroke-width="1.2" marker-end="url(#effective-agents-patterns-arrow)"><path d="M320 84 V102 Q320 112 310 112 H194 V134"/><path d="M320 84 V102 Q320 112 330 112 H502 V134"/></g>
-<rect x="24" y="136" width="340" height="314" rx="20" fill="var(--condition)" stroke="var(--border)"/>
-<text x="194" y="169" text-anchor="middle" fill="var(--ink)" font-size="18" font-weight="500">Workflow</text>
-<text x="194" y="195" text-anchor="middle" fill="var(--ink)" font-size="13">整体执行结构由程序预先设计</text>
-<rect x="40" y="214" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
-<text x="52" y="238" fill="var(--ink)" font-size="14">Prompt Chaining</text>
-<text x="332" y="238" text-anchor="end" fill="var(--ink)" font-size="13">固定顺序</text>
-<rect x="40" y="259" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
-<text x="52" y="283" fill="var(--ink)" font-size="14">Routing</text>
-<text x="332" y="283" text-anchor="end" fill="var(--ink)" font-size="13">分类分流</text>
-<rect x="40" y="304" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
-<text x="52" y="328" fill="var(--ink)" font-size="14">Parallelization</text>
-<text x="332" y="328" text-anchor="end" fill="var(--ink)" font-size="13">并行处理</text>
-<rect x="40" y="349" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
-<text x="52" y="373" fill="var(--ink)" font-size="14">Orchestrator-Workers</text>
-<text x="332" y="373" text-anchor="end" fill="var(--ink)" font-size="13">动态拆分</text>
-<rect x="40" y="394" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
-<text x="52" y="418" fill="var(--ink)" font-size="14">Evaluator-Optimizer</text>
-<text x="332" y="418" text-anchor="end" fill="var(--ink)" font-size="13">反馈迭代</text>
-<rect x="388" y="136" width="228" height="162" rx="20" fill="var(--success)" stroke="var(--success-border)"/>
-<text x="502" y="169" text-anchor="middle" fill="var(--success-ink)" font-size="18" font-weight="500">Agent</text>
-<text x="502" y="207" text-anchor="middle" fill="var(--success-ink)" font-size="14">模型依据环境反馈</text>
-<text x="502" y="233" text-anchor="middle" fill="var(--success-ink)" font-size="14">动态决定执行过程</text>
-<text x="502" y="274" text-anchor="middle" fill="var(--success-ink)" font-size="13">判断 → 行动 → 反馈 → 再判断</text>
-</svg>
-</div>
-<div style="margin-top:.5rem; text-align:center; color:hsl(var(--muted-foreground)); font-size:.75rem; line-height:1.7;">五种 Workflow 是不同组织方式，不是升级顺序。窄屏可在图内左右滑动查看。</div>
-</figure>
+- **控制结构：** Workflow 与 Agent 有什么区别，哪些执行安排由程序确定，哪些判断交给模型。
+- **五种 Workflow：** 串行、分流、并行、动态拆分与反馈迭代，分别解决什么任务结构问题。
+- **Agent 的运行：** 模型怎样依据环境反馈决定下一步，什么时候继续、什么时候停止，以及这种灵活性的代价。
 
 ## 1. Workflow 和 Agent 到底差在哪里？
 
@@ -106,7 +63,7 @@ Anthropic 建议先寻找最简单的可行方案。对不少应用来说，改�
 
 链条不必只是一路向下。程序可以在中间加入 Gate，也就是检查关口。例如，检查大纲是否覆盖指定主题、是否包含必要章节；通过才写正文，不通过则返回修改或终止。
 
-原文强调的是程序化检查。结构完整性、字段和长度等条件，可以直接由代码验证；如果检查的是论述质量，也可以增加一次模型评价，但评价标准仍需要事先说明。这样做是为了避免前一步已经跑偏，后面的调用还继续扩写。
+原文强调的是程序化检查。结构完整性、字段和长度等条件，可以直接由代码验证。这样做是为了避免前一步已经跑偏，后面的调用还继续扩写。
 
 **适合什么任务，代价是什么？**
 
@@ -251,8 +208,8 @@ Agent 通常从用户给出的目标开始，必要时先澄清任务，再进�
 原文把这种来自环境的反馈称为 **ground truth**，例如工具调用结果和代码执行输出。模型说“修好了”是一项判断，运行相关测试得到的结果，则是可以用来核对这一判断的观察。**行动改变环境，反馈再影响下一次行动。**
 
 <figure class="not-prose" style="margin:1.75em 0;">
-<figcaption style="margin:0 0 .75rem; color:hsl(var(--muted-foreground)); font-size:.8125rem; line-height:1.7;">图 2 · Agent：依据环境反馈，持续决定下一步</figcaption>
-<div tabindex="0" role="region" aria-label="图 2 · Agent：依据环境反馈，持续决定下一步" style="overflow-x:auto; max-width:100%; border-radius:16px; padding:8px 0; background:hsl(var(--background));">
+<figcaption style="margin:0 0 .75rem; color:hsl(var(--muted-foreground)); font-size:.8125rem; line-height:1.7;">图 1 · Agent：依据环境反馈，持续决定下一步</figcaption>
+<div tabindex="0" role="region" aria-label="图 1 · Agent：依据环境反馈，持续决定下一步" style="overflow-x:auto; max-width:100%; border-radius:16px; padding:8px 0; background:hsl(var(--background));">
 <svg class="agents-flow" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="effective-agents-loop-title effective-agents-loop-desc" viewBox="0 0 640 470" style="display:block; width:100%; min-width:540px; height:auto; font-family:var(--font-sans); --node:light-dark(#e8f3fc,#142b3e); --condition:light-dark(#f4f9fe,#102333); --ink:light-dark(#235e89,#c0def4); --border:light-dark(#d0e0ed,#355167); --line:light-dark(#8e959d,#8295a6); --success:light-dark(#e5f6eb,#152f26); --success-ink:light-dark(#286447,#a9debf); --success-border:light-dark(#afd3bc,#426c57); --warn:light-dark(#fff3d7,#352918); --warn-ink:light-dark(#8b5b22,#f3ce8d); --warn-border:light-dark(#e8c98e,#80663a);">
 <title id="effective-agents-loop-title">Agent 的环境反馈循环</title>
 <desc id="effective-agents-loop-desc">目标进入模型，模型决定下一步行动，使用工具并读取实际环境反馈，再依据反馈做下一次决定。必要时向人类求助并获得反馈；任务完成或达到停止条件时结束。</desc>
@@ -326,4 +283,3 @@ Sectioning 是分工：不同调用解决不同子问题。Voting 是增加判�
 ## 参考与说明
 
 - [Anthropic — Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
-- 本文按原文的架构划分整理，示例用于解释任务结构；示意图为重新绘制的学习图，不是原图复刻。
