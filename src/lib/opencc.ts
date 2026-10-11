@@ -36,6 +36,10 @@ export function convertHtmlToHongKong(html: string) {
 
       const [, closing, rawName] = tag
       const name = rawName.toLowerCase()
+      // Keep root-relative article links in the current locale, regardless of trailing slashes.
+      if (name === 'a' && !closing && protectedDepth === 0) {
+        return token.replace(/(\shref\s*=\s*)(["'])\/zh-cn(?=\/)/gi, '$1$2/zh-hk')
+      }
       if (!protectedTags.has(name)) return token
 
       if (closing) {
