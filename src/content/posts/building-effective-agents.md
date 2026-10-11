@@ -17,37 +17,47 @@ postType: metaOnly
 
 ## 知识地图：先看分类，再看任务结构
 
-原文把这些系统统称为 **Agentic Systems**，再从架构上区分 Workflow 和 Agent。它们共享的基础是 **Augmented LLM**：具备检索、工具、记忆等增强能力的模型。检索让模型获得相关信息，工具让它与外部环境交互，记忆让信息能够被保留和复用。
+原文把这些系统统称为 **Agentic Systems**，按控制结构区分为 **Workflow** 和 **Agent**。本文围绕这两类结构展开：它们是什么，五种 Workflow 分别怎样组织任务，以及什么时候需要 Agent。
 
-有了这些能力，接下来才是怎样组织执行过程：Workflow 用程序编排模型与工具；Agent 则让模型根据反馈动态决定行动。五种 Workflow 是不同的组织方式，并不是通往 Agent 的五个升级阶段。
+原文另外把具备 Retrieval、Tools、Memory 的模型称为 **Augmented LLM**，作为这些系统共同使用的能力底座。这里不展开，重点是这些能力如何被组织成 Workflow 或 Agent。
 
 <figure class="not-prose" style="margin:1.75em 0;">
-<figcaption style="margin:0 0 .75rem; color:hsl(var(--muted-foreground)); font-size:.8125rem; line-height:1.7;">图 1 · 共享能力底座，选择不同控制结构；不是从左向右升级</figcaption>
-<div tabindex="0" role="region" aria-label="图 1 · 能力底座与控制结构" style="overflow-x:auto; max-width:100%; border-radius:16px; padding:8px 0; background:hsl(var(--background));">
-<svg class="agents-flow" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="effective-agents-patterns-title effective-agents-patterns-desc" viewBox="0 0 640 420" style="display:block; width:100%; min-width:540px; height:auto; font-family:var(--font-sans); --node:light-dark(#e8f3fc,#142b3e); --condition:light-dark(#f4f9fe,#102333); --ink:light-dark(#235e89,#c0def4); --border:light-dark(#d0e0ed,#355167); --line:light-dark(#8e959d,#8295a6); --success:light-dark(#e5f6eb,#152f26); --success-ink:light-dark(#286447,#a9debf); --success-border:light-dark(#afd3bc,#426c57);">
-<title id="effective-agents-patterns-title">能力底座与控制结构</title>
-<desc id="effective-agents-patterns-desc">检索、工具和记忆增强 LLM。在这些基础能力上，可以组织预定义 Workflow，也可以构造模型根据反馈动态选择动作的 Agent。两类结构可以混合，五种 Workflow 模式之间没有必然升级顺序。</desc>
+<figcaption style="margin:0 0 .75rem; color:hsl(var(--muted-foreground)); font-size:.8125rem; line-height:1.7;">图 1 · Agentic Systems：两类控制结构，五种 Workflow</figcaption>
+<div tabindex="0" role="region" aria-label="图 1 · Agentic Systems：两类控制结构，五种 Workflow" style="overflow-x:auto; max-width:100%; border-radius:16px; padding:8px 0; background:hsl(var(--background));">
+<svg class="agents-flow" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="effective-agents-patterns-title effective-agents-patterns-desc" viewBox="0 0 640 474" style="display:block; width:100%; min-width:540px; height:auto; font-family:var(--font-sans); --node:light-dark(#e8f3fc,#142b3e); --condition:light-dark(#f4f9fe,#102333); --ink:light-dark(#235e89,#c0def4); --border:light-dark(#d0e0ed,#355167); --line:light-dark(#8e959d,#8295a6); --success:light-dark(#e5f6eb,#152f26); --success-ink:light-dark(#286447,#a9debf); --success-border:light-dark(#afd3bc,#426c57); --warn:light-dark(#fff3d7,#352918); --warn-ink:light-dark(#8b5b22,#f3ce8d); --warn-border:light-dark(#e8c98e,#80663a);">
+<title id="effective-agents-patterns-title">Agentic Systems 的分类</title>
+<desc id="effective-agents-patterns-desc">Agentic Systems 分为 Workflow 与 Agent。Workflow 的整体执行结构由程序预先设计，包含固定顺序的 Prompt Chaining、分类分流的 Routing、并行处理的 Parallelization、动态拆分的 Orchestrator-Workers，以及反馈迭代的 Evaluator-Optimizer。Agent 则由模型依据环境反馈动态决定执行过程。</desc>
 <defs><marker id="effective-agents-patterns-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 2 L6 5 L2 8" fill="none" stroke="var(--line)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<rect x="104" y="18" width="432" height="84" rx="20" fill="var(--node)" stroke="var(--border)"/>
-<text x="320" y="52" text-anchor="middle" fill="var(--ink)" font-size="18" font-weight="500">Augmented LLM</text>
-<text x="320" y="81" text-anchor="middle" fill="var(--ink)" font-size="14">Retrieval · Tools · Memory</text>
-<g fill="none" stroke="var(--line)" stroke-width="1.2" marker-end="url(#effective-agents-patterns-arrow)"><path d="M320 102 V130 Q320 142 308 142 H174 V168"/><path d="M320 102 V130 Q320 142 332 142 H466 V168"/></g>
-<rect x="24" y="170" width="300" height="218" rx="20" fill="var(--condition)" stroke="var(--border)"/>
-<text x="174" y="205" text-anchor="middle" fill="var(--ink)" font-size="18" font-weight="500">Workflow</text>
-<text x="174" y="232" text-anchor="middle" fill="var(--ink)" font-size="13">程序编排，可在节点内动态判断</text>
-<text x="174" y="271" text-anchor="middle" fill="var(--ink)" font-size="14">Prompt Chaining · Routing</text>
-<text x="174" y="303" text-anchor="middle" fill="var(--ink)" font-size="14">Parallelization</text>
-<text x="174" y="335" text-anchor="middle" fill="var(--ink)" font-size="14">Orchestrator-Workers</text>
-<text x="174" y="367" text-anchor="middle" fill="var(--ink)" font-size="14">Evaluator-Optimizer</text>
-<rect x="352" y="170" width="228" height="218" rx="20" fill="var(--success)" stroke="var(--success-border)"/>
-<text x="466" y="205" text-anchor="middle" fill="var(--success-ink)" font-size="18" font-weight="500">Agent</text>
-<text x="466" y="232" text-anchor="middle" fill="var(--success-ink)" font-size="13">模型动态主导行动过程</text>
-<text x="466" y="278" text-anchor="middle" fill="var(--success-ink)" font-size="15">判断 → 行动</text>
-<text x="466" y="317" text-anchor="middle" fill="var(--success-ink)" font-size="15">观察 → 调整</text>
-<text x="466" y="362" text-anchor="middle" fill="var(--success-ink)" font-size="13">反馈循环 + 执行边界</text>
+<rect x="200" y="18" width="240" height="66" rx="20" fill="var(--node)" stroke="var(--border)"/>
+<text x="320" y="47" text-anchor="middle" fill="var(--ink)" font-size="18" font-weight="500">Agentic Systems</text>
+<text x="320" y="71" text-anchor="middle" fill="var(--ink)" font-size="13">按执行过程由谁决定来区分</text>
+<g fill="none" stroke="var(--line)" stroke-width="1.2" marker-end="url(#effective-agents-patterns-arrow)"><path d="M320 84 V102 Q320 112 310 112 H194 V134"/><path d="M320 84 V102 Q320 112 330 112 H502 V134"/></g>
+<rect x="24" y="136" width="340" height="314" rx="20" fill="var(--condition)" stroke="var(--border)"/>
+<text x="194" y="169" text-anchor="middle" fill="var(--ink)" font-size="18" font-weight="500">Workflow</text>
+<text x="194" y="195" text-anchor="middle" fill="var(--ink)" font-size="13">整体执行结构由程序预先设计</text>
+<rect x="40" y="214" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
+<text x="52" y="238" fill="var(--ink)" font-size="14">Prompt Chaining</text>
+<text x="332" y="238" text-anchor="end" fill="var(--ink)" font-size="13">固定顺序</text>
+<rect x="40" y="259" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
+<text x="52" y="283" fill="var(--ink)" font-size="14">Routing</text>
+<text x="332" y="283" text-anchor="end" fill="var(--ink)" font-size="13">分类分流</text>
+<rect x="40" y="304" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
+<text x="52" y="328" fill="var(--ink)" font-size="14">Parallelization</text>
+<text x="332" y="328" text-anchor="end" fill="var(--ink)" font-size="13">并行处理</text>
+<rect x="40" y="349" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
+<text x="52" y="373" fill="var(--ink)" font-size="14">Orchestrator-Workers</text>
+<text x="332" y="373" text-anchor="end" fill="var(--ink)" font-size="13">动态拆分</text>
+<rect x="40" y="394" width="308" height="38" rx="10" fill="var(--node)" stroke="var(--border)"/>
+<text x="52" y="418" fill="var(--ink)" font-size="14">Evaluator-Optimizer</text>
+<text x="332" y="418" text-anchor="end" fill="var(--ink)" font-size="13">反馈迭代</text>
+<rect x="388" y="136" width="228" height="162" rx="20" fill="var(--success)" stroke="var(--success-border)"/>
+<text x="502" y="169" text-anchor="middle" fill="var(--success-ink)" font-size="18" font-weight="500">Agent</text>
+<text x="502" y="207" text-anchor="middle" fill="var(--success-ink)" font-size="14">模型依据环境反馈</text>
+<text x="502" y="233" text-anchor="middle" fill="var(--success-ink)" font-size="14">动态决定执行过程</text>
+<text x="502" y="274" text-anchor="middle" fill="var(--success-ink)" font-size="13">判断 → 行动 → 反馈 → 再判断</text>
 </svg>
 </div>
-<div style="margin-top:.5rem; text-align:center; color:hsl(var(--muted-foreground)); font-size:.75rem; line-height:1.7;">按原文概念重新整理的学习图，不是原图复刻。窄屏可在图内左右滑动查看。</div>
+<div style="margin-top:.5rem; text-align:center; color:hsl(var(--muted-foreground)); font-size:.75rem; line-height:1.7;">五种 Workflow 是不同组织方式，不是升级顺序。窄屏可在图内左右滑动查看。</div>
 </figure>
 
 ## 1. Workflow 和 Agent 到底差在哪里？
@@ -124,7 +134,7 @@ Router 不一定是 LLM，也可以是规则、传统分类模型或其他算法
 
 **适合什么任务，代价是什么？**
 
-它需要输入确实存在有意义的类别，而且分类能够比较准确。如果入口把技术问题分进退款流程，后面的处理再完善，也很难答对。因此需要关注误分类，并给模糊或跨类别输入保留澄清、兜底或转交路线。
+它需要输入确实存在有意义的类别，而且分类能够比较准确。如果入口把技术问题分进退款流程，后面的处理再完善，也很难答对。分类本身也会增加一次处理，因此要看专门路线带来的收益是否值得。
 
 **记住它的结构：先判断输入类型，再进入专门路线。**
 
@@ -148,7 +158,7 @@ Voting 不按维度分工，而是让同一个任务产生多份判断。例如�
 
 > 同一个问题 → 独立判断 A / B / C → 聚合结果
 
-这里的“投票”不一定是简单多数决。漏洞检查可以把任一分支发现的问题送去复核；内容分类也可以设置不同门槛，平衡误报与漏报。**多份判断提供的是更多视角，不是事实的自动证明。** 如果它们共享同一份不完整上下文，也可能一起漏掉问题。
+这里的“投票”不一定是简单多数决。原文的漏洞检查例子会使用不同 Prompt，分别寻找问题；内容分类则可以设置不同的投票门槛，平衡误报与漏报。具体怎样聚合，取决于任务希望得到什么结果。
 
 **适合什么任务，代价是什么？**
 
@@ -176,7 +186,7 @@ Orchestrator-Workers 也有多个 Worker，最后也要汇总。但它与前面�
 
 **适合什么任务，代价是什么？**
 
-它适合可以分解，但无法提前预测具体子任务的复杂工作，例如多文件代码修改、跨来源信息搜索。代价除了多次调用，还有拆分与协调本身：任务分得不清楚，Worker 可能重复劳动；存在依赖时，也不能不加安排地同时执行。
+它适合可以分解，但无法提前预测具体子任务的复杂工作，例如多文件代码修改、跨来源信息搜索。相比固定分工，它多了分析任务、安排 Worker 和综合结果的调用，换来的是按当前输入调整分工的灵活性。
 
 **记住区别：固定并行提前知道怎么分，Orchestrator-Workers 运行时才决定怎么分。**
 
@@ -198,11 +208,11 @@ Orchestrator-Workers 也有多个 Worker，最后也要汇总。但它与前面�
 
 Anthropic 给出两个判断：人类提出明确反馈时，结果能够被明显改善；LLM 也有能力提供这类反馈。换句话说，任务要有可用的评价标准，评价者还要能识别与这些标准有关的问题。
 
-如果只得到“很好”“还可以更好”这样的结论，循环很难产生有针对性的改善。反过来，如果标准错了，生成者可能只是越来越迎合评价者，而不是越来越符合任务目标。
+如果只得到“很好”“还可以更好”这样的结论，循环很难产生有针对性的改善。能指出具体问题、指导下一轮修改的反馈，才是这个模式有价值的地方。
 
 **适合什么任务，代价是什么？**
 
-它适合存在清晰质量标准，而且迭代能带来可观察收益的任务。生成、评价和修改都会增加成本与延迟，因此也要设定通过条件、迭代上限，并保留更好的候选，而不是默认最后一版最好。
+它适合存在清晰质量标准，而且反馈迭代能带来明显收益的任务。生成、评价和修改会增加调用次数与等待时间，因此要看这种改善是否值得额外开销。
 
 **记住它的结构：生成 → 评价 → 按反馈修改，而不是无方向地重试。**
 
@@ -222,106 +232,72 @@ Anthropic 给出两个判断：人类提出明确反馈时，结果能够被明�
 
 因此，**模式是组织任务的积木，不是整套系统只能贴一个的标签**。把每一部分为什么这样组织讲清楚，比把整套系统叫得更复杂更有用。
 
-## 9. Workflow 已经这么灵活，为什么还需要 Agent？
+## 9. 什么时候 Workflow 不够，需要 Agent？
 
-五种 Workflow 都能做复杂事情，但开发者仍然提前设计了基本执行结构。当任务连下一阶段该查什么、用什么工具、需要多少步都很难预知时，固定编排就会变得吃力。
+五种 Workflow 可以组织复杂任务，但基本执行结构仍由开发者提前设计。**如果问题是开放式的，所需步数难以预测，下一步还取决于刚获得的信息，就很难预先写出完整路径。** 这时才需要考虑 Agent。
 
 例如调查“一个服务为什么突然变慢”。问题可能来自数据库、缓存、网络或最近一次部署。读到监控结果前，很难知道该走哪条排查路线；看完慢 SQL 后，也可能需要回头检查调用方的变化。
 
-Agent 的价值就在这里：**让模型依据刚获得的信息，持续调整下一步行动。** 它不是为了替代所有流程，而是处理那些难以提前写出完整路径的部分。
+Agent 的价值就在这里：让模型依据新信息调整行动，而不是要求开发者提前列出所有可能分支。需要交给模型的，是这部分无法预先确定的执行路线。
 
-如果排查场景和处置步骤已经非常明确，固定 Workflow 依然可以更稳定。业务听起来复杂，并不自动意味着需要 Agent；真正影响选择的是执行路径有多少必须留到运行时判断的不确定性。
-
-## 10. Agent 怎么工作：决定、行动、观察，再决定
+## 10. Agent 怎样工作？
 
 Agent 通常从用户给出的目标开始，必要时先澄清任务，再进入一个反馈循环：
 
-> 读取目标与当前状态 → 决定下一步 → 调用工具 → 读取环境结果 → 更新判断
+> 目标 → 模型决定下一步 → 使用 Tool → 获得环境反馈 → 再次决定
 
-以 Coding Agent 为例，它修改代码后运行测试，读到失败信息，再决定继续修复、补充调查，还是请求帮助。这里影响下一步的，应该是实际得到的结果，而不是模型对结果的预想。
+以 Coding Agent 为例，它修改代码后运行测试，读到失败信息，再决定继续修复、补充调查，还是请求帮助。这里影响下一步的，是实际得到的结果，而不是模型对结果的预想。
 
-原文把这种来自环境的反馈称为 **ground truth**，例如工具调用结果和代码执行输出。它让系统能够检查行动是否有效：模型说“修好了”是一项判断，运行相关测试才会得到可以用来核对的观察。
-
-循环也需要出口。任务完成可以返回结果；遇到阻塞可以向人求助；达到最大迭代数时应该停止。下图把反馈循环和执行边界放在一起，其中权限与预算检查是我补充的工程说明，用来表示哪些限制应由运行时执行。
+原文把这种来自环境的反馈称为 **ground truth**，例如工具调用结果和代码执行输出。模型说“修好了”是一项判断，运行相关测试得到的结果，则是可以用来核对这一判断的观察。**行动改变环境，反馈再影响下一次行动。**
 
 <figure class="not-prose" style="margin:1.75em 0;">
-<figcaption style="margin:0 0 .75rem; color:hsl(var(--muted-foreground)); font-size:.8125rem; line-height:1.7;">图 2 · 模型根据反馈选动作，运行时守住执行边界</figcaption>
-<div tabindex="0" role="region" aria-label="图 2 · 有执行边界的 Agent 循环" style="overflow-x:auto; max-width:100%; border-radius:16px; padding:8px 0; background:hsl(var(--background));">
-<svg class="agents-flow" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="effective-agents-loop-title effective-agents-loop-desc" viewBox="0 0 640 540" style="display:block; width:100%; min-width:540px; height:auto; font-family:var(--font-sans); --node:light-dark(#e8f3fc,#142b3e); --condition:light-dark(#f4f9fe,#102333); --ink:light-dark(#235e89,#c0def4); --border:light-dark(#d0e0ed,#355167); --line:light-dark(#8e959d,#8295a6); --warn:light-dark(#fff3d7,#352918); --warn-ink:light-dark(#8b5b22,#f3ce8d); --warn-border:light-dark(#e8c98e,#80663a); --success:light-dark(#e5f6eb,#152f26); --success-ink:light-dark(#286447,#a9debf); --success-border:light-dark(#afd3bc,#426c57);">
-<title id="effective-agents-loop-title">有执行边界的 Agent 循环</title>
-<desc id="effective-agents-loop-desc">目标和状态进入模型上下文，模型提出下一步动作或完成判断。完成时返回结果；动作先经过运行时的权限、预算和步数检查，拒绝、超限或阻塞时停止或人工接管，允许时执行工具。结果和错误作为观察更新上下文，回到模型判断。反馈仍需要检查可信度和覆盖范围。</desc>
+<figcaption style="margin:0 0 .75rem; color:hsl(var(--muted-foreground)); font-size:.8125rem; line-height:1.7;">图 2 · Agent：依据环境反馈，持续决定下一步</figcaption>
+<div tabindex="0" role="region" aria-label="图 2 · Agent：依据环境反馈，持续决定下一步" style="overflow-x:auto; max-width:100%; border-radius:16px; padding:8px 0; background:hsl(var(--background));">
+<svg class="agents-flow" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="effective-agents-loop-title effective-agents-loop-desc" viewBox="0 0 640 470" style="display:block; width:100%; min-width:540px; height:auto; font-family:var(--font-sans); --node:light-dark(#e8f3fc,#142b3e); --condition:light-dark(#f4f9fe,#102333); --ink:light-dark(#235e89,#c0def4); --border:light-dark(#d0e0ed,#355167); --line:light-dark(#8e959d,#8295a6); --success:light-dark(#e5f6eb,#152f26); --success-ink:light-dark(#286447,#a9debf); --success-border:light-dark(#afd3bc,#426c57); --warn:light-dark(#fff3d7,#352918); --warn-ink:light-dark(#8b5b22,#f3ce8d); --warn-border:light-dark(#e8c98e,#80663a);">
+<title id="effective-agents-loop-title">Agent 的环境反馈循环</title>
+<desc id="effective-agents-loop-desc">目标进入模型，模型决定下一步行动，使用工具并读取实际环境反馈，再依据反馈做下一次决定。必要时向人类求助并获得反馈；任务完成或达到停止条件时结束。</desc>
 <defs><marker id="effective-agents-loop-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 2 L6 5 L2 8" fill="none" stroke="var(--line)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<text x="276" y="27" text-anchor="middle" fill="var(--ink)" font-size="14">目标 + 当前状态</text>
-<g fill="none" stroke="var(--line)" stroke-width="1.2" marker-end="url(#effective-agents-loop-arrow)"><path d="M276 36 V54"/><path d="M276 126 V184"/><path d="M276 256 V312"/><path d="M276 372 V428"/><path d="M156 464 H84 Q72 464 72 452 V104 Q72 90 86 90 H156"/><path d="M396 90 H452"/><path d="M396 220 H452"/></g>
-<rect x="156" y="56" width="240" height="70" rx="20" fill="var(--node)" stroke="var(--border)"/>
-<text x="276" y="86" text-anchor="middle" fill="var(--ink)" font-size="17" font-weight="500">模型决定下一步</text>
-<text x="276" y="112" text-anchor="middle" fill="var(--ink)" font-size="13">读取上下文，提出动作或完成判断</text>
-<text x="296" y="161" text-anchor="start" fill="var(--ink)" font-size="13">动作请求</text>
-<rect x="156" y="186" width="240" height="70" rx="20" fill="var(--condition)" stroke="var(--border)" stroke-dasharray="3 4"/>
-<text x="276" y="216" text-anchor="middle" fill="var(--ink)" font-size="16" font-weight="500">运行时检查边界</text>
-<text x="276" y="242" text-anchor="middle" fill="var(--ink)" font-size="13">权限 · 预算 · 最大步数</text>
-<text x="296" y="292" text-anchor="start" fill="var(--ink)" font-size="13">允许执行</text>
-<rect x="156" y="314" width="240" height="58" rx="20" fill="var(--node)" stroke="var(--border)"/>
-<text x="276" y="349" text-anchor="middle" fill="var(--ink)" font-size="16" font-weight="500">工具 / 环境执行动作</text>
-<text x="296" y="407" text-anchor="start" fill="var(--ink)" font-size="13">读取实际结果，而非预期结果</text>
-<rect x="156" y="430" width="240" height="70" rx="20" fill="var(--node)" stroke="var(--border)"/>
-<text x="276" y="460" text-anchor="middle" fill="var(--ink)" font-size="16" font-weight="500">取得 Observation</text>
-<text x="276" y="486" text-anchor="middle" fill="var(--ink)" font-size="13">结果 · 错误 · 状态</text>
-<text x="50" y="294" text-anchor="middle" fill="var(--ink)" font-size="13" transform="rotate(-90 50 294)">更新上下文，再判断</text>
-<rect x="454" y="56" width="162" height="70" rx="20" fill="var(--success)" stroke="var(--success-border)"/>
-<text x="535" y="86" text-anchor="middle" fill="var(--success-ink)" font-size="16" font-weight="500">完成并返回</text>
-<text x="535" y="112" text-anchor="middle" fill="var(--success-ink)" font-size="12">核对任务完成条件</text>
-<rect x="454" y="186" width="162" height="70" rx="20" fill="var(--warn)" stroke="var(--warn-border)"/>
-<text x="535" y="216" text-anchor="middle" fill="var(--warn-ink)" font-size="15" font-weight="500">停止 / 人工接管</text>
-<text x="535" y="242" text-anchor="middle" fill="var(--warn-ink)" font-size="12">拒绝 · 超限 · 阻塞</text>
-<text x="422" y="75" text-anchor="middle" fill="var(--ink)" font-size="12">完成</text>
-<text x="426" y="204" text-anchor="middle" fill="var(--ink)" font-size="12">停止</text>
+<g fill="none" stroke="var(--line)" stroke-width="1.2" marker-end="url(#effective-agents-loop-arrow)"><path d="M251 70 V116"/><path d="M251 194 V248"/><path d="M251 310 V366"/><path d="M136 405 H78 Q66 405 66 393 V168 Q66 156 78 156 H136"/><path d="M366 140 H452"/><path d="M366 164 H426 Q438 164 438 176 V268 Q438 280 450 280 H454"/><path d="M454 296 H414 Q402 296 402 284 V198 Q402 186 390 186 H366"/></g>
+<rect x="136" y="18" width="230" height="52" rx="20" fill="var(--node)" stroke="var(--border)"/>
+<text x="251" y="50" text-anchor="middle" fill="var(--ink)" font-size="17" font-weight="500">目标</text>
+<rect x="136" y="118" width="230" height="76" rx="20" fill="var(--node)" stroke="var(--border)"/>
+<text x="251" y="149" text-anchor="middle" fill="var(--ink)" font-size="17" font-weight="500">模型决定下一步</text>
+<text x="251" y="176" text-anchor="middle" fill="var(--ink)" font-size="13">依据当前状态与已有反馈</text>
+<text x="269" y="228" fill="var(--ink)" font-size="13">继续行动</text>
+<rect x="136" y="250" width="230" height="60" rx="20" fill="var(--node)" stroke="var(--border)"/>
+<text x="251" y="286" text-anchor="middle" fill="var(--ink)" font-size="17" font-weight="500">使用 Tool</text>
+<text x="269" y="344" fill="var(--ink)" font-size="13">读取实际结果</text>
+<rect x="136" y="368" width="230" height="74" rx="20" fill="var(--node)" stroke="var(--border)"/>
+<text x="251" y="399" text-anchor="middle" fill="var(--ink)" font-size="17" font-weight="500">获得环境反馈</text>
+<text x="251" y="426" text-anchor="middle" fill="var(--ink)" font-size="13">工具结果 · 执行输出 · 错误信息</text>
+<text x="44" y="290" text-anchor="middle" fill="var(--ink)" font-size="13" transform="rotate(-90 44 290)">根据反馈，再决定</text>
+<rect x="454" y="106" width="170" height="70" rx="20" fill="var(--success)" stroke="var(--success-border)"/>
+<text x="539" y="134" text-anchor="middle" fill="var(--success-ink)" font-size="12">完成 / 达到停止条件</text>
+<text x="539" y="160" text-anchor="middle" fill="var(--success-ink)" font-size="16" font-weight="500">结束并返回结果</text>
+<text x="438" y="225" text-anchor="middle" fill="var(--ink)" font-size="12">必要时</text>
+<text x="392" y="242" text-anchor="end" fill="var(--ink)" font-size="11">人类反馈</text>
+<rect x="454" y="250" width="170" height="60" rx="20" fill="var(--warn)" stroke="var(--warn-border)"/>
+<text x="539" y="286" text-anchor="middle" fill="var(--warn-ink)" font-size="16" font-weight="500">请求人类帮助</text>
 </svg>
 </div>
-<div style="margin-top:.5rem; text-align:center; color:hsl(var(--muted-foreground)); font-size:.75rem; line-height:1.7;">权限与预算门是我的工程延伸；反馈也要检查可信度。窄屏可在图内左右滑动查看。</div>
+<div style="margin-top:.5rem; text-align:center; color:hsl(var(--muted-foreground)); font-size:.75rem; line-height:1.7;">环境中的实际结果进入下一轮判断。窄屏可在图内左右滑动查看。</div>
 </figure>
 
-工具是否好用，也会影响这个循环。工具说明需要让模型知道什么时候用、参数怎么填、返回结果表示什么。原文附录举过相对路径的例子：模型改变工作目录后容易用错路径，工具改为要求绝对路径后，就减少了这类歧义。对 Agent 来说，清晰的工具接口也是执行能力的一部分。
+**人类检查点和停止条件，也是循环的一部分。** Agent 可以在关键环节向人类获取反馈，遇到阻塞时请求帮助；任务完成后返回结果，也可以由最大迭代次数等条件终止执行。它不是一个必须一直运行下去的循环。
 
-## 11. Agent 为什么更难控制？
+这样的执行方式也带来更高成本，以及错误累积的可能：一次误判可能影响后续搜索、修改和判断。环境反馈与人类检查点让系统有机会及时调整路线，但自主执行并不意味着每一步都会正确。
 
-Agent 可以根据反馈改变路线，也意味着系统更难提前穷举所有路径。原文指出了两个直接代价：更高成本，以及错误可能在执行过程中不断累积。
+## 11. Workflow 还是 Agent：最终怎么选？
 
-**路线更开放，开销更难预测**
+可以按下面的顺序判断：
 
-固定 Workflow 大致知道有哪些阶段。Agent 则可能经历多轮搜索、读取、修改和测试，前一次结果决定后一次调用。一次工具失败，也可能引出新的调查。
+1. **一次调用已经足够，就保持简单。** 先优化 Prompt，补充检索信息和上下文示例，不必为了多步而引入多步系统。
+2. **整体路线能提前设计，就选择 Workflow。** 根据任务结构安排串行、分类、并行、动态拆分或反馈迭代，让模型在明确的结构内完成工作。
+3. **路线必须在运行时探索，再考虑 Agent。** 当下一步高度依赖环境反馈，固定路径难以覆盖任务时，模型的自主决策才有明确价值。
 
-因此，调用次数、Token 消耗和总执行时间不容易提前确定。预算和最大步数不是为了否定自主性，而是避免系统在无法完成任务时仍然无限探索。
+这不是从“低级”到“高级”的升级顺序。一个复杂任务也可能有明确流程，而一句话描述的任务可能需要开放探索。**任务复杂程度，与执行路径能否预先确定，是两件不同的事。**
 
-**前面的错误，会影响后面的行动**
-
-如果一开始误判了问题来源，后面就可能围绕错误假设继续搜索、修改，甚至把新的反馈也解释成对原假设的支持。每一步单独看都有理由，整条路线却可能越走越偏。
-
-环境反馈可以帮助纠偏，但前提是系统确实读取并正确使用了它。**更多步骤提供了更多修正机会，也增加了继续犯错的机会。** 这就是为什么原文建议在沙箱环境中充分测试，并设置合适的约束与人工检查点。
-
-Workflow 同样会出错，两者的区别不是“一个安全，一个危险”，而是开放路径让 Agent 的行为和开销更难预测，需要与之相称的控制方式。
-
-## 12. 什么时候选 Workflow，什么时候选 Agent？
-
-到这里，可以把选择过程收束成三个问题：
-
-1. **一次调用能否完成任务？** 如果补充上下文、检索和示例后已经达到要求，就保持简单，不为增加步骤而增加步骤。
-2. **如果需要多步，整体执行结构能否提前设计？** 如果可以，就按任务结构选择 Workflow：固定顺序用 Chaining，分类处理用 Routing，独立工作用 Parallelization，按输入拆分用 Orchestrator-Workers，需要反馈修改用 Evaluator-Optimizer。
-3. **如果路线必须边执行边判断，是否值得交给 Agent？** 当下一步高度依赖新反馈，固定路径难以覆盖时，再考虑模型自主执行，并结合任务收益、调用成本、失败影响和可用约束判断是否合适。
-
-这里没有“Workflow 不够高级，所以换 Agent”的关系。一个复杂任务可以有明确流程，一个简单描述的任务也可能需要开放探索。**复杂程度和路径是否可预先确定，是两个不同的问题。**
-
-也不必一次性把整个系统都改成 Agent。外层保持固定流程，只在某个需要探索的环节使用 Agent，是一种自然的组合方式。
-
-## 13. 最重要的设计原则：复杂度要用结果来证明
-
-Anthropic 反复强调的原则，可以归结为：**只有复杂度确实改善结果时，才值得增加它。**
-
-多一次调用，需要回答它改善了哪一个环节；多一个 Worker，需要说明它怎样分工；多一些自主性，也需要说明固定流程为什么不够。这些设计都应该回到任务质量、成本和延迟上比较，而不是仅凭架构名称决定。
-
-原文总结的另外几个要点也服务于这条原则：设计保持简单，执行过程清楚可追踪，工具接口认真设计和测试。框架可以降低起步成本，但不应把底层 Prompt、工具调用和返回结果藏到难以理解的抽象里。
-
-对我来说，这篇文章最有价值的不是五种模式的名字，而是把选型顺序理清了：**先看任务结构，再安排控制方式，最后用实际效果判断复杂度是否值得。** 目标始终是把任务做好，而不是搭出看起来最复杂的系统。
+最终还要比较任务质量、成本和延迟：新增调用、Worker 或自主性，是否真的改善了结果？对我来说，这篇原文给出的选型主线很清楚：**先看任务结构，再安排控制方式；复杂度只有改善结果时，才值得增加。**
 
 ## 几个关键问题，串起这些模式
 
@@ -337,15 +313,11 @@ Anthropic 反复强调的原则，可以归结为：**只有复杂度确实改�
 
 **Sectioning 和 Voting 都是并行，为什么要分开？**
 
-Sectioning 是分工：不同调用解决不同子问题。Voting 是增加判断视角：同一个问题产生多份结果，再按规则汇总。前者关注如何拆工作，后者关注如何综合意见；多数一致也不自动等于结论正确。
+Sectioning 是分工：不同调用解决不同子问题。Voting 是增加判断视角：同一个问题产生多份结果，再按规则汇总。前者关注如何拆工作，后者关注如何综合同一任务的多份判断。
 
 **Orchestrator-Workers 能动态拆任务，Evaluator-Optimizer 也会循环，为什么仍是 Workflow？**
 
 因为局部决策可以是动态的，整体结构仍然可以由程序预先规定。前者遵循“拆分 → 分派 → 汇总”，后者遵循“生成 → 评价 → 修改”。模型在这些结构内做判断，并不意味着它已经主导整个执行过程。动态拆分和循环，都不是 Agent 独有的特征。
-
-**Agent 为什么需要环境反馈，而不只是让模型继续思考？**
-
-因为下一步行动需要依据实际发生的事情。模型推测代码能够运行，与真正执行后读到结果，是两种不同的信息。工具结果、测试输出和错误信息进入上下文，才能让后续判断与实际状态对应，而不是一直围绕最初的假设展开。
 
 **怎样判断增加自主性是否值得？**
 
@@ -355,4 +327,3 @@ Sectioning 是分工：不同调用解决不同子问题。Voting 是增加判�
 
 - [Anthropic — Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
 - 本文按原文的架构划分整理，示例用于解释任务结构；示意图为重新绘制的学习图，不是原图复刻。
-- 图中的权限与预算检查，以及文中对兜底、迭代上限和结果聚合的具体说明，是在原文基础上的理解与补充。
