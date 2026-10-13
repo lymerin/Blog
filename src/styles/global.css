@@ -104,6 +104,7 @@ html {
     --tech-otel: 218 35% 48%;
     --tech-shenyu: 184 32% 39%;
     --tech-browserskill: 258 32% 44%;
+    --tech-octop: 210 34% 44%;
     --tech-redis: 2 38% 48%;
     --tech-kafka: 274 24% 48%;
     --tech-docker: 205 38% 48%;
@@ -151,6 +152,7 @@ html {
     --tech-otel: 216 42% 70%;
     --tech-shenyu: 184 35% 66%;
     --tech-browserskill: 258 38% 73%;
+    --tech-octop: 210 42% 70%;
     --tech-redis: 2 43% 70%;
     --tech-kafka: 274 30% 72%;
     --tech-docker: 205 44% 70%;
@@ -262,6 +264,10 @@ html {
 
 .open-source-accent-browserskill {
   background: hsl(var(--tech-browserskill));
+}
+
+.open-source-accent-octop {
+  background: hsl(var(--tech-octop));
 }
 
 /* ===== 基础样式 ===== */
