@@ -41,6 +41,214 @@
     ],
     "contributions": [
       {
+        "number": 7483,
+        "issueNumber": 7476,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7476",
+        "title": "fix(httpclient): handle missing upstream list during failover",
+        "url": "https://github.com/apache/shenyu/pull/7483",
+        "mergedAt": "2026-10-11T15:20:04Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "在 failover 重试前检查最新 upstream 列表，缓存项被删除时返回既有的 503 耗尽响应，避免空指针异常变成 500，并补充真实缓存移除场景的回归测试。",
+          "zh-hk": "在 failover 重試前檢查最新 upstream 列表，快取項目被刪除時傳回既有的 503 耗盡回應，避免空指標異常變成 500，並補充實際快取移除情況的迴歸測試。"
+        }
+      },
+      {
+        "number": 7535,
+        "issueNumber": 7460,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7460",
+        "title": "fix(ai): synchronize routing context after request path rewrite",
+        "url": "https://github.com/apache/shenyu/pull/7535",
+        "mergedAt": "2026-10-11T14:45:21Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "让 AI 请求路径重写同步更新 ShenyuContext，避免仍向旧路径转发，同时保留已有 realUrl 转换和显式 REWRITE_URI 的优先级。",
+          "zh-hk": "讓 AI 請求路徑重寫同步更新 ShenyuContext，避免仍向舊路徑轉發，同時保留已有 realUrl 轉換及顯式 REWRITE_URI 的優先次序。"
+        }
+      },
+      {
+        "number": 7539,
+        "issueNumber": 7470,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7470",
+        "title": "fix(mqtt): fix duplicate startup and resource leaks on config updates",
+        "url": "https://github.com/apache/shenyu/pull/7539",
+        "mergedAt": "2026-10-11T14:34:36Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "串行处理 MQTT 配置更新，等效配置复用现有监听器，配置变化时安全重启，并补齐启动失败清理、幂等关闭和并发更新的测试。",
+          "zh-hk": "循序處理 MQTT 設定更新，等效設定重用現有監聽器，設定變更時安全重啟，並補齊啟動失敗清理、冪等關閉及並行更新的測試。"
+        }
+      },
+      {
+        "number": 7482,
+        "issueNumber": 7463,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7463",
+        "title": "fix(common): restore eager task queue offer policy",
+        "url": "https://github.com/apache/shenyu/pull/7482",
+        "mergedAt": "2026-10-11T08:37:31Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "让两种生产任务队列显式调用 TaskQueue 的 eager offer 策略，在工作线程繁忙且未达上限时扩容，同时保留原有入队与内存检查。",
+          "zh-hk": "讓兩種生產任務佇列顯式呼叫 TaskQueue 的 eager offer 策略，在工作執行緒繁忙且未達上限時擴容，同時保留原有入列及記憶體檢查。"
+        }
+      },
+      {
+        "number": 7537,
+        "issueNumber": 7458,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7458",
+        "title": "fix(mqtt): preserve binary payloads in MQTT retained messages",
+        "url": "https://github.com/apache/shenyu/pull/7537",
+        "mergedAt": "2026-10-10T17:30:58Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "以原始字节保存和重放 MQTT retained payload，避免字符串解码破坏二进制消息，并覆盖 ByteBuf 切片、引用生命周期与空消息删除。",
+          "zh-hk": "以原始位元組儲存及重播 MQTT retained payload，避免字串解碼破壞二進制訊息，並涵蓋 ByteBuf 切片、引用生命週期及空訊息刪除。"
+        }
+      },
+      {
+        "number": 7495,
+        "issueNumber": 7462,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7462",
+        "title": "fix(common): wake producers after memory limit changes and reset",
+        "url": "https://github.com/apache/shenyu/pull/7495",
+        "mergedAt": "2026-10-10T08:47:35Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "在内存限额变更和使用量重置时，持锁唤醒等待预算的生产者，修复扩容或缩容后 clear 仍阻塞的问题，并验证只放行符合预算的请求。",
+          "zh-hk": "在記憶體限額變更及使用量重設時，持鎖喚醒等待預算的生產者，修正擴容或縮容後 clear 仍阻塞的問題，並驗證只放行符合預算的請求。"
+        }
+      },
+      {
+        "number": 7497,
+        "issueNumber": 7471,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7471",
+        "title": "fix(tcp): fix ignored proxy selector port and property updates",
+        "url": "https://github.com/apache/shenyu/pull/7497",
+        "mergedAt": "2026-10-10T01:54:42Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "补齐 TCP selector 端口与属性更新的提交后通知和监听器替换，保留初次创建的 single-flight 机制，并处理同端口重启失败恢复与替换、删除之间的同步。",
+          "zh-hk": "補齊 TCP selector 連接埠及屬性更新的提交後通知與監聽器替換，保留首次建立的 single-flight 機制，並處理同連接埠重啟失敗復原及替換、刪除之間的同步。"
+        }
+      },
+      {
+        "number": 7447,
+        "issueNumber": 7436,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7436",
+        "title": "fix(admin): avoid double-prefixing cache keys in HTTP sync recovery",
+        "url": "https://github.com/apache/shenyu/pull/7447",
+        "mergedAt": "2026-10-10T00:54:35Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "在 HTTP 同步恢复中直接复用已带 namespace 的完整缓存 key，避免重复前缀导致空指针或跨命名空间读取，并用生产格式的缓存数据补充回归测试。",
+          "zh-hk": "在 HTTP 同步復原中直接重用已帶 namespace 的完整快取 key，避免重複前綴導致空指標或跨命名空間讀取，並以生產格式的快取資料補充迴歸測試。"
+        }
+      },
+      {
+        "number": 7435,
+        "issueNumber": 6527,
+        "issueUrl": "https://github.com/apache/shenyu/issues/6527",
+        "title": "fix(etcd): prevent watcher leaks in selectInstances",
+        "url": "https://github.com/apache/shenyu/pull/7435",
+        "mergedAt": "2026-10-08T06:40:41Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "移除 etcd 实例查询中未保留句柄的持久 watcher 和未使用缓存，继续直接查询最新实例，保留显式订阅及其清理行为。",
+          "zh-hk": "移除 etcd 實例查詢中未保留控制代碼的持久 watcher 及未使用快取，繼續直接查詢最新實例，保留顯式訂閱及其清理行為。"
+        }
+      },
+      {
+        "number": 7446,
+        "issueNumber": 6525,
+        "issueUrl": "https://github.com/apache/shenyu/issues/6525",
+        "title": "fix(zookeeper): align instance registration and discovery paths",
+        "url": "https://github.com/apache/shenyu/pull/7446",
+        "mergedAt": "2026-10-08T06:36:42Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "统一 ZooKeeper 实例注册、查询与监听路径，补齐原生实例 URL 和 Admin 更新、全量同步链路，并验证应用隔离与 namespace 保留。",
+          "zh-hk": "統一 ZooKeeper 實例註冊、查詢及監聽路徑，補齊原生實例 URL 與 Admin 更新、全量同步鏈路，並驗證應用程式隔離及 namespace 保留。"
+        }
+      },
+      {
+        "number": 7481,
+        "issueNumber": 7473,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7473",
+        "title": "fix(cache): release joined response buffer on cache misses",
+        "url": "https://github.com/apache/shenyu/pull/7481",
+        "mergedAt": "2026-10-08T06:35:09Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "在缓存未命中响应的字节复制后释放合并的 DataBuffer，避免池化 Netty 缓冲区泄漏，并验证单段、多段及额外引用场景的释放次数与响应内容。",
+          "zh-hk": "在快取未命中回應的位元組複製後釋放合併的 DataBuffer，避免池化 Netty 緩衝區洩漏，並驗證單段、多段及額外引用情況的釋放次數與回應內容。"
+        }
+      },
+      {
+        "number": 7488,
+        "issueNumber": 7474,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7474",
+        "title": "fix(ai): prevent prompt configuration leaking across requests",
+        "url": "https://github.com/apache/shenyu/pull/7488",
+        "mergedAt": "2026-10-08T06:28:41Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "将规则级 AI Prompt 设置应用到新的配置对象，避免污染共享插件配置或影响后续请求，保留规则字段整体替换的既有语义。",
+          "zh-hk": "將規則層級 AI Prompt 設定套用到新的設定物件，避免污染共享外掛設定或影響後續請求，保留規則欄位整體替換的既有語義。"
+        }
+      },
+      {
+        "number": 7448,
+        "issueNumber": 7442,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7442",
+        "title": "fix(mcp): correctly merge fixed and dynamic query parameters",
+        "url": "https://github.com/apache/shenyu/pull/7448",
+        "mergedAt": "2026-10-08T06:28:15Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "修正 MCP 请求中固定与动态 query 参数的拼接及重复判断，保留固定参数优先和动态值编码，并验证实际请求 URI 与上下文路径。",
+          "zh-hk": "修正 MCP 請求中固定與動態 query 參數的拼接及重複判斷，保留固定參數優先及動態值編碼，並驗證實際請求 URI 與上下文路徑。"
+        }
+      },
+      {
+        "number": 7449,
+        "issueNumber": 7441,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7441",
+        "title": "fix(common): prevent fallback loops with encoded query parameters",
+        "url": "https://github.com/apache/shenyu/pull/7449",
+        "mergedAt": "2026-10-08T06:28:04Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "使用原始 query 比较 fallback 目标，保留百分号编码，避免编码参数绕过同目标保护或将不同目标误判为相同，覆盖重定向与内部转发两条路径。",
+          "zh-hk": "使用原始 query 比較 fallback 目標，保留百分號編碼，避免編碼參數繞過同目標保護或將不同目標誤判為相同，涵蓋重新導向及內部轉發兩條路徑。"
+        }
+      },
+      {
+        "number": 7486,
+        "issueNumber": 7480,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7480",
+        "title": "fix(ai): preserve JSON array bodies in request transformer",
+        "url": "https://github.com/apache/shenyu/pull/7486",
+        "mergedAt": "2026-10-08T06:27:51Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "直接验证并保留 AI 请求转换器生成的 JSON 文本，避免数组变成 null 或嵌套值类型被改写，同时保留对象、数组及文本格式。",
+          "zh-hk": "直接驗證並保留 AI 請求轉換器產生的 JSON 文字，避免陣列變成 null 或巢狀值類型被改寫，同時保留物件、陣列及文字格式。"
+        }
+      },
+      {
+        "number": 7489,
+        "issueNumber": 7475,
+        "issueUrl": "https://github.com/apache/shenyu/issues/7475",
+        "title": "fix(httpclient): stop failover retrying the same failed upstream when…",
+        "url": "https://github.com/apache/shenyu/pull/7489",
+        "mergedAt": "2026-10-08T06:17:53Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "按 scheme、host 和有效端口识别失败 upstream，正确处理省略默认端口的地址，避免 failover 反复选择同一失败节点，并保留原有重试和请求体重放逻辑。",
+          "zh-hk": "按 scheme、host 及有效連接埠識別失敗 upstream，正確處理省略預設連接埠的地址，避免 failover 反覆選擇同一失敗節點，並保留原有重試及請求主體重播邏輯。"
+        }
+      },
+      {
         "number": 7426,
         "issueNumber": 6606,
         "issueUrl": "https://github.com/apache/shenyu/issues/6606",
@@ -164,5 +372,28 @@
       }
     ],
     "accent": "browserskill"
+  },
+  {
+    "slug": "octop",
+    "name": "TencentCloud Octop",
+    "repository": "https://github.com/TencentCloud/Octop",
+    "description": "Self-hosted AI assistant with multi-user and multi-agent support",
+    "tags": ["Python", "AI Agents", "uv", "Windows"],
+    "contributions": [
+      {
+        "number": 1576,
+        "issueNumber": 1562,
+        "issueUrl": "https://github.com/TencentCloud/Octop/issues/1562",
+        "title": "fix(update): repair in-app upgrade installation and version verification",
+        "url": "https://github.com/TencentCloud/Octop/pull/1576",
+        "mergedAt": "2026-10-08T06:38:09Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "修复 Windows 便携版应用内升级的安装与版本校验，优先复用满足要求的现有依赖，必要时回退完整安装，并以目标环境实际加载的版本确认升级结果，避免误报成功。",
+          "zh-hk": "修正 Windows 便攜版應用程式內升級的安裝及版本檢查，優先重用符合要求的現有依賴，需要時回退至完整安裝，並以目標環境實際載入的版本確認升級結果，避免誤報成功。"
+        }
+      }
+    ],
+    "accent": "octop"
   }
 ]
