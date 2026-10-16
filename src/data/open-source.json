@@ -357,6 +357,20 @@
     "tags": ["TypeScript", "CDP", "Browser Automation"],
     "contributions": [
       {
+        "number": 362,
+        "issueNumber": 361,
+        "issueUrl": "https://github.com/Tencent/BrowserSkill/issues/361",
+        "title": "fix(download): detect ignored transfer directory",
+        "url": "https://github.com/Tencent/BrowserSkill/pull/362",
+        "mergedAt": "2026-10-08T06:40:18Z",
+        "author": "lymerin",
+        "summary": {
+          "zh-cn": "核对浏览器下载完成后的实际目录，在命名建议被覆盖时明确报告目录不匹配及已发生的下载效果；保留目录外文件并提供恢复指引，避免误删或盲目重试。",
+          "zh-hk": "核對瀏覽器完成下載後的實際目錄，在命名建議被覆蓋時清楚回報目錄不符及已發生的下載效果；保留目錄外的檔案並提供復原指引，避免誤刪或盲目重試。"
+        },
+        "article": "browserskill-pr362"
+      },
+      {
         "number": 311,
         "issueNumber": 242,
         "issueUrl": "https://github.com/Tencent/BrowserSkill/issues/242",
@@ -391,7 +405,8 @@
         "summary": {
           "zh-cn": "修复 Windows 便携版应用内升级的安装与版本校验，优先复用满足要求的现有依赖，必要时回退完整安装，并以目标环境实际加载的版本确认升级结果，避免误报成功。",
           "zh-hk": "修正 Windows 便攜版應用程式內升級的安裝及版本檢查，優先重用符合要求的現有依賴，需要時回退至完整安裝，並以目標環境實際載入的版本確認升級結果，避免誤報成功。"
-        }
+        },
+        "article": "octop-pr1576"
       }
     ],
     "accent": "octop"
