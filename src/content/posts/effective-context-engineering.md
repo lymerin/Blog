@@ -6,6 +6,7 @@ category: notes
 tags: [Agent, Anthropic, Context Engineering, 学习笔记]
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/effective-context-engineering-light.png'
 ---
 
 [上一篇](/zh-cn/posts/advanced-tool-use/)讨论了工具怎样被发现和调用。工具执行以后，结果会回到模型；任务继续推进，又会产生新的代码、资料、判断和测试输出。这些信息怎样进入下一轮推理，就是 Context Engineering 要处理的问题。
