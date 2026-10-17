@@ -11,6 +11,7 @@ tags:
   - 在线升级
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/octop-pr1576-light.png'
 ---
 
 进度条停在 85%，到底是在下载、安装，还是已经失败了？
