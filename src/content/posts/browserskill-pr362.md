@@ -11,6 +11,7 @@ tags:
   - 文件传输
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/browserskill-pr362-light.png'
 ---
 
 浏览器的下载列表里已经有文件，为什么 `bsk download --out ...` 还没有生成指定输出？
