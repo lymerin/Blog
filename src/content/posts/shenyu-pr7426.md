@@ -6,6 +6,7 @@ category: open-source
 tags: [Apache ShenYu, Java, Spring Integration, LockRegistry, 代码清理]
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7426-light.png'
 ---
 
 这次 ShenYu PR，最后没有新增一行代码，只删掉了 418 行。和之前沿着同步链路排查 Bug 不同，这次面对的是一套已经标记 `@Deprecated` 的注册锁实现。
