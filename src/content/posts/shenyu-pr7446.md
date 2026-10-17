@@ -11,6 +11,7 @@ tags:
   - 数据同步
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7446-light.png'
 ---
 
 客户端已经把实例写进 ZooKeeper，Admin 却判断服务不存在，或者一直收不到实例变化。问题究竟出在“没有注册上”，还是“根本没看同一个地方”？
