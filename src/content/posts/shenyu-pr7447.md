@@ -11,6 +11,7 @@ tags:
   - 回归测试
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7447-light.png'
 ---
 
 Gateway 手里的配置比某个 Admin 节点更新，按理说，Admin 应该先刷新自己的缓存，再判断要不要通知 Gateway 更新。但这次，代码还没执行到刷新，就先抛出了空指针。

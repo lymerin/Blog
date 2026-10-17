@@ -11,6 +11,7 @@ tags:
   - 回归测试
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7448-light.png'
 ---
 
 给 MCP 工具配置一个 `/users?fixed=true` 的地址，再让工具输入补上 `page=1`，看起来只是把两个 query 参数放到一起。但 ShenYu 原来的构造结果是 `/users&page=1&fixed=true`。

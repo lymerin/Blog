@@ -7,6 +7,7 @@ category: notes
 tags: [Agent, Workflow, Anthropic, LLM, 学习笔记]
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/building-effective-agents-light.png'
 ---
 
 同样是调用模型和工具，有的任务适合按顺序推进，有的需要先分类、并行处理，或根据反馈反复修改。还有一些任务，下一步要做什么，只能等拿到新的信息后再判断。**这些执行方式的差别，首先来自任务本身的结构。**
