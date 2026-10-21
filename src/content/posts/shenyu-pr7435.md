@@ -11,6 +11,7 @@ tags:
   - 资源生命周期
 draft: false
 postType: metaOnly
+cover: '../../assets/covers/shenyu-pr7435-light.png'
 ---
 
 调用一次 `selectInstances()`，拿到实例列表之后，这次查询应该就结束了。但在 ShenYu 原来的 etcd 注册实现里，它还可能悄悄留下一个持续运行的 watcher。
